@@ -14,14 +14,13 @@ public:
     explicit appcore(QObject *parent = 0);
 
 private:
-
     QString siteAddress;            // адрес сайта
     int numberOfPage;               // номер страницы результатов
     QNetworkAccessManager *manager;
     QStringList parsedList;
 
 signals:
-    void sendToQML(int number, QString color);
+    void sendDataToQML(QString drawing, int summOfBalls);
 
 public slots:
     void receiveFromQML();

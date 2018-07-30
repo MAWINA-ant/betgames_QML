@@ -10,6 +10,22 @@ ApplicationWindow {
     // номер розыгрыша
     property int number: 1
 
+    /* С помощью объекта Connections
+         * Устанавливаем соединение с классом ядра приложения
+         * */
+    Connections {
+        target: appCore // Указываем целевое соединение
+        /* Объявляем и реализуем функцию, как параметр
+             * объекта и с имененем похожим на название сигнала
+             * Разница в том, что добавляем в начале on и далее пишем
+             * с заглавной буквы
+             * */
+
+        onSendDataToQML: {
+            myModel.append({num: number++, result: drawing, summ: summOfBalls})
+        }
+    }
+
     // задаём размещение кнопок получения результатов и вычислений
     Row {
         id: buttonsMenu
@@ -26,7 +42,8 @@ ApplicationWindow {
             text: qsTr("Get statistics")
 
             onClicked: {
-                myModel.append({num: number++, result: "1,2,3,4,5,6,7", summ: "213"})
+                appCore.receiveFromQML()
+                //myModel.append({num: number++, result: "1,2,3,4,5,6,7", summ: "213"})
             }
         }
 
@@ -49,10 +66,11 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 5
+        height: parent.height / 2
 
         rowDelegate: Component {
             Rectangle {
-                height: 21
+                height: 23
 
                 Behavior on height{ NumberAnimation{} }
 
@@ -89,43 +107,43 @@ ApplicationWindow {
                     id: ball_1
                     anchors.margins: 5
                     anchors.left: parent.left
-                    ballText: styleData.value.split(",")[0]
+                    ballText: styleData.value.split(" ")[0]
                 }
                 MyBall {
                     id: ball_2
                     anchors.margins: 5
                     anchors.left: ball_1.right
-                    ballText: styleData.value.split(",")[1]
+                    ballText: styleData.value.split(" ")[1]
                 }
                 MyBall {
                     id: ball_3
                     anchors.margins: 5
                     anchors.left: ball_2.right
-                    ballText: styleData.value.split(",")[2]
+                    ballText: styleData.value.split(" ")[2]
                 }
                 MyBall {
                     id: ball_4
                     anchors.margins: 5
                     anchors.left: ball_3.right
-                    ballText: styleData.value.split(",")[3]
+                    ballText: styleData.value.split(" ")[3]
                 }
                 MyBall {
                     id: ball_5
                     anchors.margins: 5
                     anchors.left: ball_4.right
-                    ballText: styleData.value.split(",")[4]
+                    ballText: styleData.value.split(" ")[4]
                 }
                 MyBall {
                     id: ball_6
                     anchors.margins: 5
                     anchors.left: ball_5.right
-                    ballText: styleData.value.split(",")[5]
+                    ballText: styleData.value.split(" ")[5]
                 }
                 MyBall {
                     id: ball_7
                     anchors.margins: 5
                     anchors.left: ball_6.right
-                    ballText: styleData.value.split(",")[6]
+                    ballText: styleData.value.split(" ")[6]
                 }
             }
         }

@@ -8,6 +8,7 @@ appcore::appcore(QObject *parent) : QObject(parent)
 }
 
 void appcore::receiveFromQML() {
+
     parsedList.clear();
     numberOfPage = 1;
     manager = new QNetworkAccessManager(this);
@@ -55,22 +56,18 @@ void appcore::replyFinished(QNetworkReply *reply)
         manager->get(QNetworkRequest(QUrl(siteAddress + QString::number(numberOfPage))));
     } else {
         for (int i = 0; i < parsedList.size(); i++) {
+
             int sum = 0;
-            qDebug() << QString::number(i + 1) + " -> " + parsedList.at(i);
-            /*QStringList numbers = parsedList.at(i).split(" ");
-            QHBoxLayout *l = new QHBoxLayout();
-            foreach (QString n, numbers) {
-                if(n != "") {
-                    QQuickWidget *wgt = new QQuickWidget;
-                    wgt->setSource(QUrl("qrc:///main.qml"));
-                    l->addWidget(wgt);
-                    QQmlContext *pcon = wgt->rootContext();
-                    qDebug() << colors[n.toInt()];
-                    pcon->setContextProperty("myColor", "yellow");
-                    pcon->setContextProperty("myText", n);
-                }
+            QString dataQML = parsedList.at(i);
+            dataQML.remove(dataQML.size() - 1, 1);
+
+            // подсчет суммы элеентов
+            QStringList strList = dataQML.split(" ");
+            foreach (QString str, strList) {
+                sum += str.toInt();
             }
-            ui->verticalLayout->addLayout(l);*/
+            //***********************
+            emit sendDataToQML(dataQML, sum);
         }
     }
     reply->deleteLater();
