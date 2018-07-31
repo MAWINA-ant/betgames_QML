@@ -18,12 +18,16 @@ private:
     int numberOfPage;               // номер страницы результатов
     QNetworkAccessManager *manager;
     QStringList parsedList;
+    QMap<int, int> frequencyInRow;
+    QMap<int, int> frequencyAll;
 
 signals:
     void sendDataToQML(QString drawing, int summOfBalls);
+    void sendResultToQML(int numberBall, int freqRow, int freqAll);
 
 public slots:
-    void receiveFromQML();
+    void receiveFromQMLGetData();
+    void receiveFromQMLCalculate();
     void replyFinished(QNetworkReply *reply);
 };
 

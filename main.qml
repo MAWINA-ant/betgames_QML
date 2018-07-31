@@ -24,6 +24,10 @@ ApplicationWindow {
         onSendDataToQML: {
             myModel.append({num: number++, result: drawing, summ: summOfBalls})
         }
+
+        onSendResultToQML: {
+            modelCalculate.append({ball: numberBall, freqInRow: freqRow, freqAll: freqAll})
+        }
     }
 
     // задаём размещение кнопок получения результатов и вычислений
@@ -42,8 +46,8 @@ ApplicationWindow {
             text: qsTr("Get statistics")
 
             onClicked: {
-                appCore.receiveFromQML()
-                //myModel.append({num: number++, result: "1,2,3,4,5,6,7", summ: "213"})
+                myModel.clear()
+                appCore.receiveFromQMLGetData()
             }
         }
 
@@ -54,7 +58,7 @@ ApplicationWindow {
             text: qsTr("Compute")
 
             onClicked: {
-
+                appCore.receiveFromQMLCalculate()
             }
         }
 
@@ -70,7 +74,7 @@ ApplicationWindow {
 
         rowDelegate: Component {
             Rectangle {
-                height: 23
+                height: 24
 
                 Behavior on height{ NumberAnimation{} }
 
@@ -101,8 +105,6 @@ ApplicationWindow {
             width: 180
 
             delegate: Item {
-                anchors.fill: parent
-
                 MyBall {
                     id: ball_1
                     anchors.margins: 5
@@ -155,6 +157,81 @@ ApplicationWindow {
 
         model: ListModel {
             id : myModel
+        }
+    }
+
+    Text {
+        id: label
+        anchors.top: tableResults.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: 5
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+        height: 20
+        text: qsTr("Высчитаные ожидания:")
+    }
+
+    TableView {
+        id: tableCalculate
+        anchors.top: label.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 5
+
+        rowDelegate: Component {
+            Rectangle {
+                height: 24
+
+                Behavior on height{ NumberAnimation{} }
+
+                color: styleData.selected ? "#448" : (styleData.alternate? "#eee" : "#fff")
+                BorderImage{
+                    id: selected
+                    anchors.fill: parent
+                    //source: "../images/selectedrow.png"
+                    visible: styleData.selected
+                    border{left:2; right:2; top:2; bottom:2}
+                    SequentialAnimation {
+                        running: true; loops: Animation.Infinite
+                        NumberAnimation { target:selected; property: "opacity"; to: 1.0; duration: 900}
+                        NumberAnimation { target:selected; property: "opacity"; to: 0.5; duration: 900}
+                    }
+                }
+            }
+        }
+        TableViewColumn {
+            role: "ball"
+            title: "Ball"
+            width: 30
+
+            delegate: Item {
+                MyBall {
+                    id: ball_calculate
+                    anchors.margins: 5
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    ballText: styleData.value
+                }
+            }
+        }
+
+        TableViewColumn {
+            role: "freqInRow"
+            title: "Frequancy in a row"
+            width: 100
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        TableViewColumn {
+            role: "freqAll"
+            title: "Frequancy all"
+            width: 80
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        model: ListModel {
+            id : modelCalculate
         }
     }
 }

@@ -7,7 +7,7 @@ appcore::appcore(QObject *parent) : QObject(parent)
 
 }
 
-void appcore::receiveFromQML() {
+void appcore::receiveFromQMLGetData() {
 
     parsedList.clear();
     numberOfPage = 1;
@@ -71,4 +71,35 @@ void appcore::replyFinished(QNetworkReply *reply)
         }
     }
     reply->deleteLater();
+}
+
+//**************************************
+// вычисляются и выводятся все шарики и
+// как давно они не выпадали
+// выделяются красным
+//**************************************
+
+void appcore::receiveFromQMLCalculate()
+{
+    frequencyInRow.clear();
+    frequencyAll.clear();
+    for (int i = 0; i < parsedList.size(); i++) {
+        QStringList pari = parsedList.at(i).split(" ");
+        pari.removeLast();
+        for (int j = 0; j < pari.size(); j++) {
+            int key = pari.at(j).toInt();
+            frequencyAll[key]++;
+            if (frequencyInRow.contains(key)) {
+                continue;
+            } else {
+                frequencyInRow.insert(key, i);
+            }
+        }
+    }
+    QMapIterator<int, int> it(frequencyInRow);
+    while (it.hasNext()) {
+        it.next();
+
+        emit sendResultToQML(it.key(), it.value(), frequencyAll.value(it.key()));
+    }
 }

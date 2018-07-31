@@ -9,6 +9,7 @@ Rectangle {
     height: 20
     radius: 10
     color: ballColor
+    anchors.verticalCenter: parent.verticalCenter
     Text {
         id: number
         text: ballText
