@@ -9,6 +9,7 @@ ApplicationWindow {
 
     // номер розыгрыша
     property int number: 1
+    property int gameId: 1     // тип игры
 
     /* С помощью объекта Connections
          * Устанавливаем соединение с классом ядра приложения
@@ -28,45 +29,108 @@ ApplicationWindow {
         onSendResultToQML: {
             modelCalculate.append({ball: numberBall, freqInRow: freqRow, freqAll: freqAll})
         }
+
+        // прогресс получения статистики
+        onSendProgressStatus: {
+            progressGetResult.value = progressStatus
+        }
     }
 
-    // задаём размещение кнопок получения результатов и вычислений
-    Row {
-        id: buttonsMenu
-        height: 30
+    Column {
+        id: menu
+        height: 90
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 5
+        Row {
+            id: gameChoice
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 5
 
-        Button {
-            id: buttonGetStat
-            width: parent.width / 2
+            RadioButton {
+                id: button_7_of_42
+                width: parent.width / 2
+                text: qsTr("7 out of 42")
+                checked: true
+                onCheckedChanged: {
+                    if (button_7_of_42.checked == true) {
+                        gameId = 1
+                        button_6_of_36.checked = false
+                    }
+                    appCore.gameChanged(gameId)
+                    myModel.clear()
+                    modelCalculate.clear()
+                    progressGetResult.value = 0.0
+                }
+            }
+
+            RadioButton {
+                id: button_6_of_36
+                width: parent.width / 2
+                text: qsTr("5 out of 36")
+                onCheckedChanged: {
+                    if (button_6_of_36.checked == true) {
+                        gameId = 3
+                        button_7_of_42.checked = false
+                    }
+                    appCore.gameChanged(gameId)
+                    myModel.clear()
+                    modelCalculate.clear()
+                    progressGetResult.value = 0.0
+                }
+            }
+        }
+        // задаём размещение кнопок получения результатов и вычислений
+        Row {
+            id: buttonsMenu
             height: 30
-            text: qsTr("Get statistics")
+            anchors.top: gameChoice.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 5
 
-            onClicked: {
-                myModel.clear()
-                appCore.receiveFromQMLGetData()
+            Button {
+                id: buttonGetStat
+                width: parent.width / 2
+                height: 30
+                text: qsTr("Get statistics")
+
+                onClicked: {
+                    myModel.clear()
+                    number = 1
+                    appCore.receiveFromQMLGetData()
+                }
+            }
+
+            Button {
+                id: buttonCompute
+                width: parent.width / 2
+                height: 30
+                text: qsTr("Compute")
+
+                onClicked: {
+                    modelCalculate.clear()
+                    appCore.receiveFromQMLCalculate()
+                }
             }
         }
 
-        Button {
-            id: buttonCompute
-            width: parent.width / 2
-            height: 30
-            text: qsTr("Compute")
-
-            onClicked: {
-                appCore.receiveFromQMLCalculate()
-            }
+        ProgressBar {
+            id: progressGetResult
+            height: 25
+            anchors.top: buttonsMenu.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 5
+            //value: statusGetData
         }
-
     }
 
     TableView {
         id: tableResults
-        anchors.top: buttonsMenu.bottom
+        anchors.top: menu.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 5
@@ -82,7 +146,6 @@ ApplicationWindow {
                 BorderImage{
                     id: selected
                     anchors.fill: parent
-                    //source: "../images/selectedrow.png"
                     visible: styleData.selected
                     border{left:2; right:2; top:2; bottom:2}
                     SequentialAnimation {
@@ -102,50 +165,64 @@ ApplicationWindow {
         TableViewColumn {
             role: "result"
             title: "Result"
-            width: 180
+            width: (gameId == 1) ? 180 : 130
 
             delegate: Item {
+                property var arrayOfNumber : styleData.value.split(" ")
                 MyBall {
                     id: ball_1
                     anchors.margins: 5
                     anchors.left: parent.left
-                    ballText: styleData.value.split(" ")[0]
+                    ballText: arrayOfNumber[0]
+                    idGame: gameId
                 }
                 MyBall {
                     id: ball_2
                     anchors.margins: 5
                     anchors.left: ball_1.right
-                    ballText: styleData.value.split(" ")[1]
+                    ballText: arrayOfNumber[1]
+                    idGame: gameId
+                    onBallTextChanged: {console.log("arrayOfNumber[1]" + arrayOfNumber[1]);}
+
                 }
                 MyBall {
                     id: ball_3
                     anchors.margins: 5
                     anchors.left: ball_2.right
-                    ballText: styleData.value.split(" ")[2]
+                    ballText: arrayOfNumber[2]
+                    idGame: gameId
+
                 }
                 MyBall {
                     id: ball_4
                     anchors.margins: 5
                     anchors.left: ball_3.right
-                    ballText: styleData.value.split(" ")[3]
+                    ballText: arrayOfNumber[3]
+                    idGame: gameId
                 }
                 MyBall {
                     id: ball_5
                     anchors.margins: 5
                     anchors.left: ball_4.right
-                    ballText: styleData.value.split(" ")[4]
+                    ballText: arrayOfNumber[4]
+                    idGame: gameId
                 }
                 MyBall {
                     id: ball_6
                     anchors.margins: 5
                     anchors.left: ball_5.right
-                    ballText: styleData.value.split(" ")[5]
+                    ballText: arrayOfNumber[5]
+                    idGame: gameId
+                    visible: (idGame == 1) ? true : false
+
                 }
                 MyBall {
                     id: ball_7
                     anchors.margins: 5
                     anchors.left: ball_6.right
-                    ballText: styleData.value.split(" ")[6]
+                    ballText: arrayOfNumber[6]
+                    idGame: gameId
+                    visible: (idGame == 1) ? true : false
                 }
             }
         }
@@ -212,6 +289,7 @@ ApplicationWindow {
                     anchors.margins: 5
                     anchors.horizontalCenter: parent.horizontalCenter
                     ballText: styleData.value
+                    idGame: gameId
                 }
             }
         }

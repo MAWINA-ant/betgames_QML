@@ -1,8 +1,7 @@
 #include "appcore.h"
-//#include <QUrl>
-//#include <QNetworkRequest>
+#include <QMessageBox>
 
-appcore::appcore(QObject *parent) : QObject(parent)
+appcore::appcore(QObject *parent) : QObject(parent), versionOfGame(1)
 {
 
 }
@@ -18,7 +17,7 @@ void appcore::receiveFromQMLGetData() {
     if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3)
         dateForSiteAddress.setDate(dateForSiteAddress.year(), dateForSiteAddress.month(), dateForSiteAddress.day() - 1);
     siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
-                + dateForSiteAddress.toString("yyyy-MM-dd") + "/1/";
+                + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
     manager->get(QNetworkRequest(QUrl(siteAddress + QString::number(numberOfPage))));
 }
 
@@ -29,6 +28,12 @@ void appcore::receiveFromQMLGetData() {
 
 void appcore::replyFinished(QNetworkReply *reply)
 {
+    if (!reply->bytesAvailable()) {
+        QMessageBox errorMessage;
+        errorMessage.setText("Problem with connection to internet");
+        errorMessage.exec();
+        return;
+    }
     QByteArray dataFromPage = reply->readAll();
     QString stringFromPage(dataFromPage);
 
@@ -38,7 +43,10 @@ void appcore::replyFinished(QNetworkReply *reply)
 
     unparsedList.removeAt(0);
     unparsedList.removeAll(QString("Watch "));
-    unparsedList.removeAll(QString("7 out of 42"));
+    if (versionOfGame == 1)
+        unparsedList.removeAll(QString("7 out of 42"));
+    else if (versionOfGame == 3)
+        unparsedList.removeAll(QString("5 out of 36"));
     unparsedList.removeLast();
 
     //*****************************************************************************
@@ -50,8 +58,8 @@ void appcore::replyFinished(QNetworkReply *reply)
             parsedList.append(unparsedList.at(i));
         }
     }
-    if (numberOfPage < (QString(unparsedList.last()).toInt() + 1)) {//&&
-        //parsedList.size() < 90) {
+    emit sendProgressStatus(numberOfPage * 1.0 / (unparsedList.last().toInt() + 1));
+    if (numberOfPage < (QString(unparsedList.last()).toInt() + 1)) {
         numberOfPage++;
         manager->get(QNetworkRequest(QUrl(siteAddress + QString::number(numberOfPage))));
     } else {
@@ -102,4 +110,10 @@ void appcore::receiveFromQMLCalculate()
 
         emit sendResultToQML(it.key(), it.value(), frequencyAll.value(it.key()));
     }
+}
+
+void appcore::gameChanged(int id)
+{
+    versionOfGame = id;
+    qDebug() << versionOfGame;
 }
