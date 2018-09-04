@@ -6,7 +6,7 @@ appcore::appcore(QObject *parent) : QObject(parent), versionOfGame(1)
 
 }
 
-void appcore::receiveFromQMLGetData() {
+void appcore::receiveFromQMLGetData(int countDays) {
 
     parsedList.clear();
     numberOfPage = 1;
@@ -14,11 +14,15 @@ void appcore::receiveFromQMLGetData() {
     connect(manager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
     QDate dateForSiteAddress = QDate::currentDate();
-    if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3)
-        dateForSiteAddress.setDate(dateForSiteAddress.year(), dateForSiteAddress.month(), dateForSiteAddress.day() - 1);
-    siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
-                + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
-    manager->get(QNetworkRequest(QUrl(siteAddress + QString::number(numberOfPage))));
+    for (int i = 0; i < countDays; i++){
+        if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3)
+            dateForSiteAddress.setDate(dateForSiteAddress.year(), dateForSiteAddress.month(), dateForSiteAddress.day() - 1);
+        siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
+                    + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
+        manager->get(QNetworkRequest(QUrl(siteAddress + QString::number(numberOfPage))));
+        dateForSiteAddress = dateForSiteAddress.addDays(-1);
+    }
+
 }
 
 //****************************************
@@ -54,11 +58,11 @@ void appcore::replyFinished(QNetworkReply *reply)
     //*****************************************************************************
 
     for (int i = 1; i < unparsedList.size(); i += 2) {
-        if (unparsedList.at(i).length() > 3) {
+        if (unparsedList.at(i).length() > 3 && unparsedList.at(i) != "Draw was canceled. ") {
             parsedList.append(unparsedList.at(i));
         }
     }
-    emit sendProgressStatus(numberOfPage * 1.0 / (unparsedList.last().toInt() + 1));
+    emit sendProgressStatus(numberOfPage * 1.0 / (unparsedList.last().toInt() * 1));
     if (numberOfPage < (QString(unparsedList.last()).toInt() + 1)) {
         numberOfPage++;
         manager->get(QNetworkRequest(QUrl(siteAddress + QString::number(numberOfPage))));
@@ -107,7 +111,6 @@ void appcore::receiveFromQMLCalculate()
     QMapIterator<int, int> it(frequencyInRow);
     while (it.hasNext()) {
         it.next();
-
         emit sendResultToQML(it.key(), it.value(), frequencyAll.value(it.key()));
     }
 }
@@ -115,5 +118,4 @@ void appcore::receiveFromQMLCalculate()
 void appcore::gameChanged(int id)
 {
     versionOfGame = id;
-    qDebug() << versionOfGame;
 }

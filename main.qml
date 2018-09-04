@@ -3,8 +3,8 @@ import QtQuick.Controls 1.2
 
 ApplicationWindow {
     visible: true
-    width: 480
-    height: 480
+    width: 430
+    height: 640
     title: qsTr("BetGames statistics")
 
     // номер розыгрыша
@@ -36,105 +36,112 @@ ApplicationWindow {
         }
     }
 
-    Column {
-        id: menu
-        height: 90
+    Row {
+        id: gameChoice
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        Row {
-            id: gameChoice
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: 5
+        anchors.margins: 5
 
-            RadioButton {
-                id: button_7_of_42
-                width: parent.width / 2
-                text: qsTr("7 out of 42")
-                checked: true
-                onCheckedChanged: {
-                    if (button_7_of_42.checked == true) {
-                        gameId = 1
-                        button_6_of_36.checked = false
-                    }
-                    appCore.gameChanged(gameId)
-                    myModel.clear()
-                    modelCalculate.clear()
-                    progressGetResult.value = 0.0
+        RadioButton {
+            id: button_7_of_42
+            width: parent.width / 4
+            text: qsTr("7 out of 42")
+            checked: true
+            onCheckedChanged: {
+                if (button_7_of_42.checked == true) {
+                    gameId = 1
+                    button_6_of_36.checked = false
                 }
-            }
-
-            RadioButton {
-                id: button_6_of_36
-                width: parent.width / 2
-                text: qsTr("5 out of 36")
-                onCheckedChanged: {
-                    if (button_6_of_36.checked == true) {
-                        gameId = 3
-                        button_7_of_42.checked = false
-                    }
-                    appCore.gameChanged(gameId)
-                    myModel.clear()
-                    modelCalculate.clear()
-                    progressGetResult.value = 0.0
-                }
+                appCore.gameChanged(gameId)
+                myModel.clear()
+                modelCalculate.clear()
+                progressGetResult.value = 0.0
             }
         }
-        // задаём размещение кнопок получения результатов и вычислений
-        Row {
-            id: buttonsMenu
+
+        RadioButton {
+            id: button_6_of_36
+            width: parent.width / 4
+            text: qsTr("5 out of 36")
+            onCheckedChanged: {
+                if (button_6_of_36.checked == true) {
+                    gameId = 3
+                    button_7_of_42.checked = false
+                }
+                appCore.gameChanged(gameId)
+                myModel.clear()
+                modelCalculate.clear()
+                progressGetResult.value = 0.0
+            }
+        }
+
+        Text {
+            id: countDaysLabel
+            width: parent.width / 4
+            text: qsTr("Days of statistics: ")
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        SpinBox {
+            id: countDaysOfStats
+            width: parent.width / 4
+            value: 1
+            maximumValue: 365
+        }
+    }
+    // задаём размещение кнопок получения результатов и вычислений
+    Row {
+        id: buttonsMenu
+        height: 30
+        anchors.top: gameChoice.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: 5
+
+        Button {
+            id: buttonGetStat
+            width: parent.width / 2
             height: 30
-            anchors.top: gameChoice.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: 5
+            text: qsTr("Get statistics")
 
-            Button {
-                id: buttonGetStat
-                width: parent.width / 2
-                height: 30
-                text: qsTr("Get statistics")
-
-                onClicked: {
-                    myModel.clear()
-                    number = 1
-                    appCore.receiveFromQMLGetData()
-                }
-            }
-
-            Button {
-                id: buttonCompute
-                width: parent.width / 2
-                height: 30
-                text: qsTr("Compute")
-
-                onClicked: {
-                    modelCalculate.clear()
-                    appCore.receiveFromQMLCalculate()
-                }
+            onClicked: {
+                myModel.clear()
+                modelCalculate.clear()
+                number = 1
+                appCore.receiveFromQMLGetData(countDaysOfStats.value)
             }
         }
 
-        ProgressBar {
-            id: progressGetResult
-            height: 25
-            anchors.top: buttonsMenu.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: 5
-            //value: statusGetData
+        Button {
+            id: buttonCompute
+            width: parent.width / 2
+            height: 30
+            text: qsTr("Compute")
+
+            onClicked: {
+                modelCalculate.clear()
+                appCore.receiveFromQMLCalculate()
+            }
         }
+    }
+
+    ProgressBar {
+        id: progressGetResult
+        height: 25
+        anchors.top: buttonsMenu.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: 5
     }
 
     TableView {
         id: tableResults
-        anchors.top: menu.bottom
+        anchors.top: progressGetResult.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 5
-        height: parent.height / 2
+        //height: parent.height / 2
 
         rowDelegate: Component {
             Rectangle {
@@ -168,11 +175,12 @@ ApplicationWindow {
             width: (gameId == 1) ? 180 : 130
 
             delegate: Item {
-                property var arrayOfNumber : styleData.value.split(" ")
+                property var arrayOfNumber : styleData.value.toString().split(" ")
                 MyBall {
                     id: ball_1
                     anchors.margins: 5
                     anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
                     ballText: arrayOfNumber[0]
                     idGame: gameId
                 }
@@ -180,16 +188,16 @@ ApplicationWindow {
                     id: ball_2
                     anchors.margins: 5
                     anchors.left: ball_1.right
-                    ballText: arrayOfNumber[1]
+                    anchors.verticalCenter: parent.verticalCenter
+                    ballText: arrayOfNumber[1] !== undefined ? arrayOfNumber[1] : ""
                     idGame: gameId
-                    onBallTextChanged: {console.log("arrayOfNumber[1]" + arrayOfNumber[1]);}
-
                 }
                 MyBall {
                     id: ball_3
                     anchors.margins: 5
                     anchors.left: ball_2.right
-                    ballText: arrayOfNumber[2]
+                    anchors.verticalCenter: parent.verticalCenter
+                    ballText: arrayOfNumber[2] !== undefined ? arrayOfNumber[2] : ""
                     idGame: gameId
 
                 }
@@ -197,21 +205,24 @@ ApplicationWindow {
                     id: ball_4
                     anchors.margins: 5
                     anchors.left: ball_3.right
-                    ballText: arrayOfNumber[3]
+                    anchors.verticalCenter: parent.verticalCenter
+                    ballText: arrayOfNumber[3] !== undefined ? arrayOfNumber[3] : ""
                     idGame: gameId
                 }
                 MyBall {
                     id: ball_5
                     anchors.margins: 5
                     anchors.left: ball_4.right
-                    ballText: arrayOfNumber[4]
+                    anchors.verticalCenter: parent.verticalCenter
+                    ballText: arrayOfNumber[4] !== undefined ? arrayOfNumber[4] : ""
                     idGame: gameId
                 }
                 MyBall {
                     id: ball_6
                     anchors.margins: 5
                     anchors.left: ball_5.right
-                    ballText: arrayOfNumber[5]
+                    anchors.verticalCenter: parent.verticalCenter
+                    ballText: arrayOfNumber[5] !== undefined ? arrayOfNumber[5] : ""
                     idGame: gameId
                     visible: (idGame == 1) ? true : false
 
@@ -220,7 +231,8 @@ ApplicationWindow {
                     id: ball_7
                     anchors.margins: 5
                     anchors.left: ball_6.right
-                    ballText: arrayOfNumber[6]
+                    anchors.verticalCenter: parent.verticalCenter
+                    ballText: arrayOfNumber[6] !== undefined ? arrayOfNumber[6] : ""
                     idGame: gameId
                     visible: (idGame == 1) ? true : false
                 }
@@ -249,67 +261,56 @@ ApplicationWindow {
         text: qsTr("Высчитаные ожидания:")
     }
 
-    TableView {
-        id: tableCalculate
+    // компонент=делегат для отображения в ListView с вычислениями
+    Component {
+        id: ballDelegate
+        Item {
+            width: listCalculate.cellWidth
+            height: listCalculate.cellHeight
+            MyBall {
+                id: theBall
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                ballText: ball
+                idGame: gameId
+            }
+
+            Text {
+                id: inRow
+                anchors.top: theBall.bottom
+                text: '<b>In a row:</b> ' + freqInRow
+                color: freqInRow > 15 ? "red" : "black"
+            }
+
+            Text {
+                id: allFreq
+                anchors.top: inRow.bottom
+                text: '<b>All times:</b> ' + freqAll }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: parent.GridView.view.currentIndex = index
+            }
+        }
+    }
+
+
+    GridView {
+        id: listCalculate
         anchors.top: label.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 5
+        cellHeight: 50
+        cellWidth: 70
 
-        rowDelegate: Component {
-            Rectangle {
-                height: 24
-
-                Behavior on height{ NumberAnimation{} }
-
-                color: styleData.selected ? "#448" : (styleData.alternate? "#eee" : "#fff")
-                BorderImage{
-                    id: selected
-                    anchors.fill: parent
-                    //source: "../images/selectedrow.png"
-                    visible: styleData.selected
-                    border{left:2; right:2; top:2; bottom:2}
-                    SequentialAnimation {
-                        running: true; loops: Animation.Infinite
-                        NumberAnimation { target:selected; property: "opacity"; to: 1.0; duration: 900}
-                        NumberAnimation { target:selected; property: "opacity"; to: 0.5; duration: 900}
-                    }
-                }
-            }
-        }
-        TableViewColumn {
-            role: "ball"
-            title: "Ball"
-            width: 30
-
-            delegate: Item {
-                MyBall {
-                    id: ball_calculate
-                    anchors.margins: 5
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    ballText: styleData.value
-                    idGame: gameId
-                }
-            }
-        }
-
-        TableViewColumn {
-            role: "freqInRow"
-            title: "Frequancy in a row"
-            width: 100
-            horizontalAlignment: Text.AlignHCenter
-        }
-
-        TableViewColumn {
-            role: "freqAll"
-            title: "Frequancy all"
-            width: 80
-            horizontalAlignment: Text.AlignHCenter
-        }
+        delegate: ballDelegate
 
         model: ListModel {
             id : modelCalculate
         }
+        highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
     }
+
 }

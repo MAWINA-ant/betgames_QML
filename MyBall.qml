@@ -10,7 +10,6 @@ Rectangle {
     height: 20
     radius: 10
     color: ballColor
-    anchors.verticalCenter: parent.verticalCenter
     border.color: "black"
     border.width: 1
     Text {
@@ -24,9 +23,6 @@ Rectangle {
     }
 
     function setColor() {
-        if (ballText == "") {
-            ballColor = "grey"
-        }
         if (idGame == 1) {
             if (ballText == "1" || ballText == "3" || ballText == "5" || ballText == "8" || ballText == "10" || ballText == "12" || ballText == "13" || ballText == "15"
                     || ballText == "17" || ballText == "20" || ballText == "22" || ballText == "24" || ballText == "26" || ballText == "27" || ballText == "29"

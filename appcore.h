@@ -30,7 +30,7 @@ signals:
     void sendProgressStatus(double progressStatus);
 
 public slots:
-    void receiveFromQMLGetData();
+    void receiveFromQMLGetData(int countDays);
     void receiveFromQMLCalculate();
     void gameChanged(int id);
     void replyFinished(QNetworkReply *reply);
