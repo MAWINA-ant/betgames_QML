@@ -1,15 +1,16 @@
 #include "appcore.h"
 #include <QMessageBox>
+#include <QDebug>
 
-appcore::appcore(QObject *parent) : QObject(parent), versionOfGame(1)
+appcore::appcore(QObject *parent) : QObject(parent)
 {
-
+    gameChanged(1);
 }
 
 void appcore::receiveFromQMLGetData(int countDays) {
-
     parsedList.clear();
-    numberOfPage = 1;
+    currentRequest = 0;
+    allPages = 0;
     manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
@@ -19,10 +20,19 @@ void appcore::receiveFromQMLGetData(int countDays) {
             dateForSiteAddress.setDate(dateForSiteAddress.year(), dateForSiteAddress.month(), dateForSiteAddress.day() - 1);
         siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
                     + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
-        manager->get(QNetworkRequest(QUrl(siteAddress + QString::number(numberOfPage))));
+        int countOfPages = 10;
+        if (dateForSiteAddress == QDate::currentDate()) {
+            int fiveMinuteCount = ((QTime::currentTime().hour() - 3) * 60 + QTime::currentTime().minute()) / 5;
+            countOfPages = fiveMinuteCount % 30 > 0 ? fiveMinuteCount / 30 + 1: fiveMinuteCount / 30;
+        }
+        for (int i = 1; i <= countOfPages; i++) {
+            siteAdresses.append(siteAddress + QString::number(i));
+            allPages++;
+        }
         dateForSiteAddress = dateForSiteAddress.addDays(-1);
     }
-
+    manager->get(QNetworkRequest(QUrl(siteAdresses.at(0))));
+    siteAdresses.removeFirst();
 }
 
 //****************************************
@@ -38,6 +48,9 @@ void appcore::replyFinished(QNetworkReply *reply)
         errorMessage.exec();
         return;
     }
+    QStringList currentParsedList;
+    currentParsedList.clear();
+    currentRequest++;
     QByteArray dataFromPage = reply->readAll();
     QString stringFromPage(dataFromPage);
 
@@ -56,33 +69,31 @@ void appcore::replyFinished(QNetworkReply *reply)
     //*****************************************************************************
     // в цикле отделяется все лишнее и заносится лист строк с числами через пробел
     //*****************************************************************************
-
     for (int i = 1; i < unparsedList.size(); i += 2) {
         if (unparsedList.at(i).length() > 3 && unparsedList.at(i) != "Draw was canceled. ") {
             parsedList.append(unparsedList.at(i));
+            currentParsedList.append(unparsedList.at(i));
         }
     }
-    emit sendProgressStatus(numberOfPage * 1.0 / (unparsedList.last().toInt() * 1));
-    if (numberOfPage < (QString(unparsedList.last()).toInt() + 1)) {
-        numberOfPage++;
-        manager->get(QNetworkRequest(QUrl(siteAddress + QString::number(numberOfPage))));
-    } else {
-        for (int i = 0; i < parsedList.size(); i++) {
+    emit sendProgressStatus(currentRequest * 1.0 / allPages);
+    for (int i = 0; i < currentParsedList.size(); i++) {
+        int sum = 0;
+        QString dataQML = currentParsedList.at(i);
+        dataQML.remove(dataQML.size() - 1, 1);
 
-            int sum = 0;
-            QString dataQML = parsedList.at(i);
-            dataQML.remove(dataQML.size() - 1, 1);
-
-            // подсчет суммы элеентов
-            QStringList strList = dataQML.split(" ");
-            foreach (QString str, strList) {
-                sum += str.toInt();
-            }
-            //***********************
-            emit sendDataToQML(dataQML, sum);
+        // подсчет суммы элеентов
+        QStringList strList = dataQML.split(" ");
+        foreach (QString str, strList) {
+            sum += str.toInt();
         }
+        //***********************
+        emit sendDataToQML(dataQML, sum);
     }
     reply->deleteLater();
+    if (!siteAdresses.isEmpty()) {
+        manager->get(QNetworkRequest(QUrl(siteAdresses.at(0))));
+        siteAdresses.removeFirst();
+    }
 }
 
 //**************************************
@@ -113,9 +124,38 @@ void appcore::receiveFromQMLCalculate()
         it.next();
         emit sendResultToQML(it.key(), it.value(), frequencyAll.value(it.key()));
     }
+    for (int i = 0; i < parsedList.size(); i++) {
+        QStringList pari = parsedList.at(i).split(" ");
+        pari.removeLast();
+        QList<int> pariNumbers;
+        foreach (QString num, pari) {
+            pariNumbers.append(num.toInt());
+        }
+        qSort(pariNumbers.begin(), pariNumbers.end());
+        pari.clear();
+        foreach (int num, pariNumbers) {
+            pari.append(QString::number(num));
+        }
+        for (int j = 0; j < pari.size() - 1; j++) {
+            if (frequencyInRowPair.contains(pari.at(j) + " " + pari.at(j+1))) {
+                if (frequencyInRowPair.value(pari.at(j) + " " + pari.at(j+1)) == 0)
+                    frequencyInRowPair[pari.at(j) + " " + pari.at(j+1)] = i;
+            }
+        }
+    }
 }
 
 void appcore::gameChanged(int id)
 {
     versionOfGame = id;
+    frequencyInRowPair.clear();
+    if (id == 1) {
+        for (int i = 1; i < 43; i++) {
+            frequencyInRowPair.insert(QString::number(i) + " " + QString::number(i+1), 0);
+        }
+    } else if (id == 3) {
+        for (int i = 1; i < 37; i++) {
+            frequencyInRowPair.insert(QString::number(i) + " " + QString::number(i+1), 0);
+        }
+    }
 }

@@ -3,8 +3,8 @@ import QtQuick.Controls 1.2
 
 ApplicationWindow {
     visible: true
-    width: 430
-    height: 640
+    width: 490
+    height: 740
     title: qsTr("BetGames statistics")
 
     // номер розыгрыша
@@ -88,6 +88,7 @@ ApplicationWindow {
             width: parent.width / 4
             value: 1
             maximumValue: 365
+            minimumValue: 1
         }
     }
     // задаём размещение кнопок получения результатов и вычислений
@@ -141,7 +142,7 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: 5
-        //height: parent.height / 2
+        height: parent.height / 3
 
         rowDelegate: Component {
             Rectangle {
@@ -285,7 +286,9 @@ ApplicationWindow {
             Text {
                 id: allFreq
                 anchors.top: inRow.bottom
-                text: '<b>All times:</b> ' + freqAll }
+                text: '<b>All times:</b> ' + freqAll
+                color: freqAll < (number / (gameChoice > 1 ? 7 : 6)) ? "green" : "black"
+            }
 
             MouseArea {
                 anchors.fill: parent
@@ -293,7 +296,6 @@ ApplicationWindow {
             }
         }
     }
-
 
     GridView {
         id: listCalculate
@@ -303,7 +305,8 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         anchors.margins: 5
         cellHeight: 50
-        cellWidth: 70
+        cellWidth: 80
+
 
         delegate: ballDelegate
 

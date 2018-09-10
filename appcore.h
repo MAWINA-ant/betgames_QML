@@ -17,12 +17,15 @@ public:
 
 private:
     QString siteAddress;            // адрес сайта
-    int numberOfPage;               // номер страницы результатов
     int versionOfGame;              // версия игры (7 из 42 или 5 из 36)
+    int allPages = 0;                   // всего страниц
+    int currentRequest = 0;
     QNetworkAccessManager *manager;
     QStringList parsedList;
+    QStringList siteAdresses;
     QMap<int, int> frequencyInRow;
     QMap<int, int> frequencyAll;
+    QMap<QString, int> frequencyInRowPair;
 
 signals:
     void sendDataToQML(QString drawing, int summOfBalls);
