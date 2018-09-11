@@ -1,10 +1,11 @@
-import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick 2.9
+import QtQuick.Controls 1.4
+import QtQuick.Controls 2.1
 
 ApplicationWindow {
     visible: true
     width: 490
-    height: 740
+    height: 750
     title: qsTr("BetGames statistics")
 
     // номер розыгрыша
@@ -86,9 +87,9 @@ ApplicationWindow {
         SpinBox {
             id: countDaysOfStats
             width: parent.width / 4
-            value: 1
-            maximumValue: 365
-            minimumValue: 1
+            value: 1            
+            //maximumValue: 365.0
+            //minimumValue: 1.0
         }
     }
     // задаём размещение кнопок получения результатов и вычислений
@@ -279,6 +280,7 @@ ApplicationWindow {
             Text {
                 id: inRow
                 anchors.top: theBall.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
                 text: '<b>In a row:</b> ' + freqInRow
                 color: freqInRow > 15 ? "red" : "black"
             }
@@ -286,34 +288,65 @@ ApplicationWindow {
             Text {
                 id: allFreq
                 anchors.top: inRow.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
                 text: '<b>All times:</b> ' + freqAll
                 color: freqAll < (number / (gameChoice > 1 ? 7 : 6)) ? "green" : "black"
             }
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: parent.GridView.view.currentIndex = index
+                onClicked: {
+                    parent.GridView.view.currentIndex = index
+                    console.log(parent.y)
+                }
+                onMouseYChanged: console.log(y)
             }
         }
     }
 
-    GridView {
-        id: listCalculate
+    ListModel {
+        id : modelCalculate
+    }
+
+    SwipeView {
         anchors.top: label.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 5
-        cellHeight: 50
-        cellWidth: 80
 
+        Item {
+            id: oneballInfo
+            GridView {
+                id: listCalculate
+                anchors.fill: parent
+                //anchors.margins: 5
+                cellHeight: 50
+                cellWidth: 80
 
-        delegate: ballDelegate
+                snapMode: GridView.SnapOneRow
 
-        model: ListModel {
-            id : modelCalculate
+                delegate: ballDelegate
+
+                model: modelCalculate
+
+                highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+            }
+            /*MouseArea {
+                anchors.fill: parent
+            }*/
         }
-        highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+
+        Item {
+            id: pairBallInfo
+            Rectangle {
+                //color: "blue"
+                anchors.fill: parent
+            }
+        }
     }
+
+
+
 
 }
