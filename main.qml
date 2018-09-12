@@ -297,9 +297,8 @@ ApplicationWindow {
                 anchors.fill: parent
                 onClicked: {
                     parent.GridView.view.currentIndex = index
-                    console.log(parent.y)
+
                 }
-                onMouseYChanged: console.log(y)
             }
         }
     }
@@ -332,9 +331,6 @@ ApplicationWindow {
 
                 highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
             }
-            /*MouseArea {
-                anchors.fill: parent
-            }*/
         }
 
         Item {
