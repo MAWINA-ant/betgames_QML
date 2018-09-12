@@ -87,7 +87,7 @@ ApplicationWindow {
         SpinBox {
             id: countDaysOfStats
             width: parent.width / 4
-            value: 1            
+            value: 1
             //maximumValue: 365.0
             //minimumValue: 1.0
         }
@@ -308,28 +308,31 @@ ApplicationWindow {
     }
 
     SwipeView {
+        id: statResults
         anchors.top: label.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 5
-
         Item {
             id: oneballInfo
             GridView {
                 id: listCalculate
                 anchors.fill: parent
-                //anchors.margins: 5
                 cellHeight: 50
                 cellWidth: 80
+                //boundsMovement: Flickable.StopAtBounds
+                //boundsBehavior: Flickable.DragOverBounds
+                opacity: Math.max(0.5, 1.0 - Math.abs(verticalOvershoot) / height)
 
-                snapMode: GridView.SnapOneRow
 
                 delegate: ballDelegate
 
                 model: modelCalculate
 
-                highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+                highlight: Rectangle { color: "skyblue"; radius: 5 }
+
+
             }
         }
 
@@ -341,8 +344,5 @@ ApplicationWindow {
             }
         }
     }
-
-
-
 
 }
