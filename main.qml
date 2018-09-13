@@ -2,9 +2,10 @@ import QtQuick 2.9
 import QtQuick.Controls 1.4
 import QtQuick.Controls 2.1
 
+
 ApplicationWindow {
     visible: true
-    width: 490
+    width: 485
     height: 750
     title: qsTr("BetGames statistics")
 
@@ -24,7 +25,7 @@ ApplicationWindow {
              * */
 
         onSendDataToQML: {
-            myModel.append({num: number++, result: drawing, summ: summOfBalls})
+            modelResults.append({num: number++, result: drawing, summ: summOfBalls})
         }
 
         onSendResultToQML: {
@@ -37,312 +38,456 @@ ApplicationWindow {
         }
     }
 
-    Row {
-        id: gameChoice
+    SwipeView {
+        id: mainView
+
+        currentIndex: 1
+        //anchors.fill: parent
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: 5
+        height: parent.height - 120
 
-        RadioButton {
-            id: button_7_of_42
-            width: parent.width / 4
-            text: qsTr("7 out of 42")
-            checked: true
-            onCheckedChanged: {
-                if (button_7_of_42.checked == true) {
-                    gameId = 1
-                    button_6_of_36.checked = false
-                }
-                appCore.gameChanged(gameId)
-                myModel.clear()
-                modelCalculate.clear()
-                progressGetResult.value = 0.0
-            }
-        }
+        Item {
+            id: firstPage
 
-        RadioButton {
-            id: button_6_of_36
-            width: parent.width / 4
-            text: qsTr("5 out of 36")
-            onCheckedChanged: {
-                if (button_6_of_36.checked == true) {
-                    gameId = 3
-                    button_7_of_42.checked = false
-                }
-                appCore.gameChanged(gameId)
-                myModel.clear()
-                modelCalculate.clear()
-                progressGetResult.value = 0.0
-            }
-        }
+            // компонент=делегат для отображения в GridView с вычислениями
+            //*************************************************************
+            Component {
+                id: ballDelegate
+                Item {
+                    width: listCalculate.cellWidth
+                    height: listCalculate.cellHeight
 
-        Text {
-            id: countDaysLabel
-            width: parent.width / 4
-            text: qsTr("Days of statistics: ")
-            anchors.verticalCenter: parent.verticalCenter
-        }
+                    MyBall {
+                        id: theBall
+                        anchors.top: parent.top
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.margins: 5
+                        ballText: ball
+                        idGame: gameId
+                    }
 
-        SpinBox {
-            id: countDaysOfStats
-            width: parent.width / 4
-            value: 1
-            //maximumValue: 365.0
-            //minimumValue: 1.0
-        }
-    }
-    // задаём размещение кнопок получения результатов и вычислений
-    Row {
-        id: buttonsMenu
-        height: 30
-        anchors.top: gameChoice.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: 5
+                    Text {
+                        id: inRow
+                        anchors.top: theBall.bottom
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.margins: 5
+                        text: '<b>In a row:</b> ' + freqInRow
+                        color: freqInRow > 15 ? "red" : "black"
+                    }
 
-        Button {
-            id: buttonGetStat
-            width: parent.width / 2
-            height: 30
-            text: qsTr("Get statistics")
+                    Text {
+                        id: allFreq
+                        anchors.top: inRow.bottom
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.margins: 5
+                        text: '<b>All times:</b> ' + freqAll
+                        color: freqAll < (number / (statisticsSettings > 1 ? 7 : 6)) ? "green" : "black"
+                    }
 
-            onClicked: {
-                myModel.clear()
-                modelCalculate.clear()
-                number = 1
-                appCore.receiveFromQMLGetData(countDaysOfStats.value)
-            }
-        }
-
-        Button {
-            id: buttonCompute
-            width: parent.width / 2
-            height: 30
-            text: qsTr("Compute")
-
-            onClicked: {
-                modelCalculate.clear()
-                appCore.receiveFromQMLCalculate()
-            }
-        }
-    }
-
-    ProgressBar {
-        id: progressGetResult
-        height: 25
-        anchors.top: buttonsMenu.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: 5
-    }
-
-    TableView {
-        id: tableResults
-        anchors.top: progressGetResult.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: 5
-        height: parent.height / 3
-
-        rowDelegate: Component {
-            Rectangle {
-                height: 24
-
-                Behavior on height{ NumberAnimation{} }
-
-                color: styleData.selected ? "#448" : (styleData.alternate? "#eee" : "#fff")
-                BorderImage{
-                    id: selected
-                    anchors.fill: parent
-                    visible: styleData.selected
-                    border{left:2; right:2; top:2; bottom:2}
-                    SequentialAnimation {
-                        running: true; loops: Animation.Infinite
-                        NumberAnimation { target:selected; property: "opacity"; to: 1.0; duration: 900}
-                        NumberAnimation { target:selected; property: "opacity"; to: 0.5; duration: 900}
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            parent.GridView.view.currentIndex = index
+                        }
                     }
                 }
             }
-        }
-        TableViewColumn {
-            role: "num"
-            title: "№"
-            width: 40
-        }
-
-        TableViewColumn {
-            role: "result"
-            title: "Result"
-            width: (gameId == 1) ? 180 : 130
-
-            delegate: Item {
-                property var arrayOfNumber : styleData.value.toString().split(" ")
-                MyBall {
-                    id: ball_1
-                    anchors.margins: 5
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    ballText: arrayOfNumber[0]
-                    idGame: gameId
-                }
-                MyBall {
-                    id: ball_2
-                    anchors.margins: 5
-                    anchors.left: ball_1.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    ballText: arrayOfNumber[1] !== undefined ? arrayOfNumber[1] : ""
-                    idGame: gameId
-                }
-                MyBall {
-                    id: ball_3
-                    anchors.margins: 5
-                    anchors.left: ball_2.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    ballText: arrayOfNumber[2] !== undefined ? arrayOfNumber[2] : ""
-                    idGame: gameId
-
-                }
-                MyBall {
-                    id: ball_4
-                    anchors.margins: 5
-                    anchors.left: ball_3.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    ballText: arrayOfNumber[3] !== undefined ? arrayOfNumber[3] : ""
-                    idGame: gameId
-                }
-                MyBall {
-                    id: ball_5
-                    anchors.margins: 5
-                    anchors.left: ball_4.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    ballText: arrayOfNumber[4] !== undefined ? arrayOfNumber[4] : ""
-                    idGame: gameId
-                }
-                MyBall {
-                    id: ball_6
-                    anchors.margins: 5
-                    anchors.left: ball_5.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    ballText: arrayOfNumber[5] !== undefined ? arrayOfNumber[5] : ""
-                    idGame: gameId
-                    visible: (idGame == 1) ? true : false
-
-                }
-                MyBall {
-                    id: ball_7
-                    anchors.margins: 5
-                    anchors.left: ball_6.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    ballText: arrayOfNumber[6] !== undefined ? arrayOfNumber[6] : ""
-                    idGame: gameId
-                    visible: (idGame == 1) ? true : false
-                }
-            }
-        }
-
-        TableViewColumn {
-            role: "summ"
-            title: "Summ"
-        }
-
-        model: ListModel {
-            id : myModel
-        }
-    }
-
-    Text {
-        id: label
-        anchors.top: tableResults.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: 5
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-        height: 20
-        text: qsTr("Высчитаные ожидания:")
-    }
-
-    // компонент=делегат для отображения в ListView с вычислениями
-    Component {
-        id: ballDelegate
-        Item {
-            width: listCalculate.cellWidth
-            height: listCalculate.cellHeight
-            MyBall {
-                id: theBall
-                anchors.top: parent.top
-                anchors.horizontalCenter: parent.horizontalCenter
-                ballText: ball
-                idGame: gameId
-            }
-
-            Text {
-                id: inRow
-                anchors.top: theBall.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: '<b>In a row:</b> ' + freqInRow
-                color: freqInRow > 15 ? "red" : "black"
-            }
-
-            Text {
-                id: allFreq
-                anchors.top: inRow.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: '<b>All times:</b> ' + freqAll
-                color: freqAll < (number / (gameChoice > 1 ? 7 : 6)) ? "green" : "black"
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    parent.GridView.view.currentIndex = index
-
-                }
-            }
-        }
-    }
-
-    ListModel {
-        id : modelCalculate
-    }
-
-    SwipeView {
-        id: statResults
-        anchors.top: label.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.margins: 5
-        Item {
-            id: oneballInfo
+            //*************************************************************
             GridView {
                 id: listCalculate
                 anchors.fill: parent
-                cellHeight: 50
+                cellHeight: 70
                 cellWidth: 80
-                //boundsMovement: Flickable.StopAtBounds
-                //boundsBehavior: Flickable.DragOverBounds
-                opacity: Math.max(0.5, 1.0 - Math.abs(verticalOvershoot) / height)
 
+                opacity: Math.max(0.5, 1.0 - Math.abs(verticalOvershoot) / height)
 
                 delegate: ballDelegate
 
                 model: modelCalculate
 
-                highlight: Rectangle { color: "skyblue"; radius: 5 }
+                header: Rectangle {
+                    width: parent.width
+                    height: 30
+                    gradient: Gradient {
+                        GradientStop {position: 0; color: "gray"}
+                        GradientStop {position: 0.7; color: "black"}
+                    }
+                    Text {
+                        anchors.centerIn: parent
+                        color: "gray"
+                        text: "One ball results"
+                        font.bold: true
+                        font.pointSize: 20
+                    }
+                }
 
+                highlight: Rectangle {
+                    color: "skyblue"; radius: 5
+                }
+            }
 
+            ListModel {
+                id : modelCalculate
             }
         }
 
         Item {
-            id: pairBallInfo
+            id: secondPage
+
+            ListView {
+                id: listResults
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: parent.height / 2
+                anchors.margins: 5
+
+                //clip: true
+                highlight: Rectangle {
+                    color: "skyblue"
+                }
+                highlightFollowsCurrentItem: true
+
+                model: ListModel {
+                    id : modelResults
+                }
+
+                delegate: Item {
+                    id: listResultsDelegate
+                    Row {
+                        Text {
+                            id: numberOfResult
+                            text: qsTr("№" + num)
+                        }
+
+                        Item {
+                            property var arrayOfNumber : styleData.value.toString().split(" ")
+                            MyBall {
+                                id: ball_1
+                                anchors.margins: 5
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
+                                ballText: arrayOfNumber[0]
+                                idGame: gameId
+                            }
+                            MyBall {
+                                id: ball_2
+                                anchors.margins: 5
+                                anchors.left: ball_1.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                ballText: arrayOfNumber[1] !== undefined ? arrayOfNumber[1] : ""
+                                idGame: gameId
+                            }
+                            MyBall {
+                                id: ball_3
+                                anchors.margins: 5
+                                anchors.left: ball_2.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                ballText: arrayOfNumber[2] !== undefined ? arrayOfNumber[2] : ""
+                                idGame: gameId
+
+                            }
+                            MyBall {
+                                id: ball_4
+                                anchors.margins: 5
+                                anchors.left: ball_3.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                ballText: arrayOfNumber[3] !== undefined ? arrayOfNumber[3] : ""
+                                idGame: gameId
+                            }
+                            MyBall {
+                                id: ball_5
+                                anchors.margins: 5
+                                anchors.left: ball_4.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                ballText: arrayOfNumber[4] !== undefined ? arrayOfNumber[4] : ""
+                                idGame: gameId
+                            }
+                            MyBall {
+                                id: ball_6
+                                anchors.margins: 5
+                                anchors.left: ball_5.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                ballText: arrayOfNumber[5] !== undefined ? arrayOfNumber[5] : ""
+                                idGame: gameId
+                                visible: (idGame == 1) ? true : false
+
+                            }
+                            MyBall {
+                                id: ball_7
+                                anchors.margins: 5
+                                anchors.left: ball_6.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                ballText: arrayOfNumber[6] !== undefined ? arrayOfNumber[6] : ""
+                                idGame: gameId
+                                visible: (idGame == 1) ? true : false
+                            }
+                        }
+
+                        Text {
+                            id: summOfResult
+                            text: qsTr("The summ " + summOfBalls)
+                        }
+                    }
+                }
+            }
+/*
+            // Таблица с результатами
+            //************************
+            TableView {
+                id: tableResults
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: parent.height / 2
+                anchors.margins: 5
+
+                rowDelegate: Component {
+                    Rectangle {
+                        height: 24
+
+                        Behavior on height{ NumberAnimation{} }
+
+                        color: styleData.selected ? "#448" : (styleData.alternate? "#eee" : "#fff")
+                        BorderImage{
+                            id: selected
+                            anchors.fill: parent
+                            visible: styleData.selected
+                            border{left:2; right:2; top:2; bottom:2}
+                            SequentialAnimation {
+                                running: true; loops: Animation.Infinite
+                                NumberAnimation { target:selected; property: "opacity"; to: 1.0; duration: 900}
+                                NumberAnimation { target:selected; property: "opacity"; to: 0.5; duration: 900}
+                            }
+                        }
+                    }
+                }
+                TableViewColumn {
+                    role: "num"
+                    title: "№"
+                    width: 40
+                }
+
+                TableViewColumn {
+                    role: "result"
+                    title: "Result"
+                    width: (gameId == 1) ? 180 : 130
+
+                    delegate: Item {
+                        property var arrayOfNumber : styleData.value.toString().split(" ")
+                        MyBall {
+                            id: ball_1
+                            anchors.margins: 5
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            ballText: arrayOfNumber[0]
+                            idGame: gameId
+                        }
+                        MyBall {
+                            id: ball_2
+                            anchors.margins: 5
+                            anchors.left: ball_1.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            ballText: arrayOfNumber[1] !== undefined ? arrayOfNumber[1] : ""
+                            idGame: gameId
+                        }
+                        MyBall {
+                            id: ball_3
+                            anchors.margins: 5
+                            anchors.left: ball_2.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            ballText: arrayOfNumber[2] !== undefined ? arrayOfNumber[2] : ""
+                            idGame: gameId
+
+                        }
+                        MyBall {
+                            id: ball_4
+                            anchors.margins: 5
+                            anchors.left: ball_3.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            ballText: arrayOfNumber[3] !== undefined ? arrayOfNumber[3] : ""
+                            idGame: gameId
+                        }
+                        MyBall {
+                            id: ball_5
+                            anchors.margins: 5
+                            anchors.left: ball_4.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            ballText: arrayOfNumber[4] !== undefined ? arrayOfNumber[4] : ""
+                            idGame: gameId
+                        }
+                        MyBall {
+                            id: ball_6
+                            anchors.margins: 5
+                            anchors.left: ball_5.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            ballText: arrayOfNumber[5] !== undefined ? arrayOfNumber[5] : ""
+                            idGame: gameId
+                            visible: (idGame == 1) ? true : false
+
+                        }
+                        MyBall {
+                            id: ball_7
+                            anchors.margins: 5
+                            anchors.left: ball_6.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            ballText: arrayOfNumber[6] !== undefined ? arrayOfNumber[6] : ""
+                            idGame: gameId
+                            visible: (idGame == 1) ? true : false
+                        }
+                    }
+                }
+
+                TableViewColumn {
+                    role: "summ"
+                    title: "Summ"
+                }
+
+                model: ListModel {
+                    id : myModel
+                }
+            }
+            //************************
+            */
+        }
+
+        Item {
+            id: thirdPage
             Rectangle {
-                //color: "blue"
                 anchors.fill: parent
+                color: "blue"
             }
         }
     }
 
+    PageIndicator {
+        id: indicator
+
+        count: mainView.count
+        currentIndex: mainView.currentIndex
+
+        anchors.bottom: mainView.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+    Rectangle {
+        id: mainMenu
+        //color: parent.color
+        anchors.top: indicator.bottom
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        // строка с выбором игры и кол-вом дней выборки
+        //**********************************************
+        Row {
+            id: statisticsSettings
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 5
+
+            RadioButton {
+                id: button_7_of_42
+                width: parent.width / 4
+                text: qsTr("7 out of 42")
+                checked: true
+                onCheckedChanged: {
+                    if (button_7_of_42.checked == true) {
+                        gameId = 1
+                        button_6_of_36.checked = false
+                    }
+                    appCore.gameChanged(gameId)
+                    modelResults.clear()
+                    modelCalculate.clear()
+                    progressGetResult.value = 0.0
+                }
+            }
+
+            RadioButton {
+                id: button_6_of_36
+                width: parent.width / 4
+                text: qsTr("5 out of 36")
+                onCheckedChanged: {
+                    if (button_6_of_36.checked == true) {
+                        gameId = 3
+                        button_7_of_42.checked = false
+                    }
+                    appCore.gameChanged(gameId)
+                    modelResults.clear()
+                    modelCalculate.clear()
+                    progressGetResult.value = 0.0
+                }
+            }
+
+            Text {
+                id: countDaysLabel
+                width: parent.width / 4
+                text: qsTr("Days of statistics: ")
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            SpinBox {
+                id: countDaysOfStats
+                width: parent.width / 4
+                value: 1
+                from: 1
+                to: 365
+            }
+        }
+        //**********************************************
+
+        // показывает процесс загрузки страниц с сайта
+        //*********************************************
+        ProgressBar {
+            id: progressGetResult
+            height: 25
+            anchors.top: statisticsSettings.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 5
+        }
+        //*********************************************
+
+        // Строка с кнопками для получения результатов и подсчетов
+        //*********************************************************
+        Row {
+            id: buttonsMenu
+            height: 30
+            anchors.top: progressGetResult.bottom
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 5
+
+            Button {
+                id: buttonGetStat
+                width: parent.width / 2
+                height: 30
+                text: qsTr("Get statistics")
+
+                onClicked: {
+                    modelResults.clear()
+                    modelCalculate.clear()
+                    number = 1
+                    progressGetResult.value = 0.0
+                    appCore.receiveFromQMLGetData(countDaysOfStats.value)
+                }
+            }
+
+            Button {
+                id: buttonCompute
+                width: parent.width / 2
+                height: 30
+                text: qsTr("Compute")
+                onClicked: {
+                    modelCalculate.clear()
+                    appCore.receiveFromQMLCalculate()
+                }
+            }
+        }
+        //*********************************************************
+    }
 }
