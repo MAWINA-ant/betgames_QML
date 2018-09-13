@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>MyBall.qml</file>
+        <file>MyHeader.qml</file>
     </qresource>
 </RCC>

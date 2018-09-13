@@ -107,20 +107,8 @@ ApplicationWindow {
 
                 model: modelCalculate
 
-                header: Rectangle {
-                    width: parent.width
-                    height: 30
-                    gradient: Gradient {
-                        GradientStop {position: 0; color: "gray"}
-                        GradientStop {position: 0.7; color: "black"}
-                    }
-                    Text {
-                        anchors.centerIn: parent
-                        color: "gray"
-                        text: "One ball results"
-                        font.bold: true
-                        font.pointSize: 20
-                    }
+                header: MyHeader {
+                    headerText: "One ball"
                 }
 
                 highlight: Rectangle {
@@ -136,15 +124,106 @@ ApplicationWindow {
         Item {
             id: secondPage
 
+            Component {
+                id: listResultsDelegate
+
+                Item {
+                    width: parent.width; height: 30
+
+                    Text {
+                        id: numberResults
+                        anchors.left: parent.Left
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.margins: 5
+                        text: "№ " + num + "  "
+                    }
+
+                    MyBall {
+                        id: ball_1
+                        anchors.margins: 5
+                        anchors.left: numberResults.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        ballText: result.split(" ")[0] !== undefined ? result.split(" ")[0] : ""
+                        idGame: gameId
+                    }
+                    MyBall {
+                        id: ball_2
+                        anchors.margins: 5
+                        anchors.left: ball_1.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        ballText: result.split(" ")[1] !== undefined ? result.split(" ")[1] : ""
+                        idGame: gameId
+                    }
+                    MyBall {
+                        id: ball_3
+                        anchors.margins: 5
+                        anchors.left: ball_2.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        ballText: result.split(" ")[2] !== undefined ? result.split(" ")[2] : ""
+                        idGame: gameId
+
+                    }
+                    MyBall {
+                        id: ball_4
+                        anchors.margins: 5
+                        anchors.left: ball_3.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        ballText: result.split(" ")[3] !== undefined ? result.split(" ")[3] : ""
+                        idGame: gameId
+                    }
+                    MyBall {
+                        id: ball_5
+                        anchors.margins: 5
+                        anchors.left: ball_4.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        ballText: result.split(" ")[4] !== undefined ? result.split(" ")[4] : ""
+                        idGame: gameId
+                    }
+                    MyBall {
+                        id: ball_6
+                        anchors.margins: 5
+                        anchors.left: ball_5.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        ballText: result.split(" ")[5] !== undefined ? result.split(" ")[5] : ""
+                        idGame: gameId
+                        visible: (idGame == 1) ? true : false
+
+                    }
+                    MyBall {
+                        id: ball_7
+                        anchors.margins: 5
+                        anchors.left: ball_6.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        ballText: result.split(" ")[6] !== undefined ? result.split(" ")[6] : ""
+                        idGame: gameId
+                        visible: (idGame == 1) ? true : false
+                    }
+
+                    Text {
+                        id: summResult
+                        anchors.left: ball_7.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.margins: 5
+                        text: "Summ " + summ + "  "
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            parent.ListView.view.currentIndex = index
+                        }
+                    }
+
+                }
+            }
+
             ListView {
                 id: listResults
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: parent.height / 2
-                anchors.margins: 5
+                anchors.fill: parent
 
-                //clip: true
+                header: MyHeader {
+                    headerText: "All statistics"
+                }
                 highlight: Rectangle {
                     color: "skyblue"
                 }
@@ -154,203 +233,8 @@ ApplicationWindow {
                     id : modelResults
                 }
 
-                delegate: Item {
-                    id: listResultsDelegate
-                    Row {
-                        Text {
-                            id: numberOfResult
-                            text: qsTr("№" + num)
-                        }
-
-                        Item {
-                            property var arrayOfNumber : styleData.value.toString().split(" ")
-                            MyBall {
-                                id: ball_1
-                                anchors.margins: 5
-                                anchors.left: parent.left
-                                anchors.verticalCenter: parent.verticalCenter
-                                ballText: arrayOfNumber[0]
-                                idGame: gameId
-                            }
-                            MyBall {
-                                id: ball_2
-                                anchors.margins: 5
-                                anchors.left: ball_1.right
-                                anchors.verticalCenter: parent.verticalCenter
-                                ballText: arrayOfNumber[1] !== undefined ? arrayOfNumber[1] : ""
-                                idGame: gameId
-                            }
-                            MyBall {
-                                id: ball_3
-                                anchors.margins: 5
-                                anchors.left: ball_2.right
-                                anchors.verticalCenter: parent.verticalCenter
-                                ballText: arrayOfNumber[2] !== undefined ? arrayOfNumber[2] : ""
-                                idGame: gameId
-
-                            }
-                            MyBall {
-                                id: ball_4
-                                anchors.margins: 5
-                                anchors.left: ball_3.right
-                                anchors.verticalCenter: parent.verticalCenter
-                                ballText: arrayOfNumber[3] !== undefined ? arrayOfNumber[3] : ""
-                                idGame: gameId
-                            }
-                            MyBall {
-                                id: ball_5
-                                anchors.margins: 5
-                                anchors.left: ball_4.right
-                                anchors.verticalCenter: parent.verticalCenter
-                                ballText: arrayOfNumber[4] !== undefined ? arrayOfNumber[4] : ""
-                                idGame: gameId
-                            }
-                            MyBall {
-                                id: ball_6
-                                anchors.margins: 5
-                                anchors.left: ball_5.right
-                                anchors.verticalCenter: parent.verticalCenter
-                                ballText: arrayOfNumber[5] !== undefined ? arrayOfNumber[5] : ""
-                                idGame: gameId
-                                visible: (idGame == 1) ? true : false
-
-                            }
-                            MyBall {
-                                id: ball_7
-                                anchors.margins: 5
-                                anchors.left: ball_6.right
-                                anchors.verticalCenter: parent.verticalCenter
-                                ballText: arrayOfNumber[6] !== undefined ? arrayOfNumber[6] : ""
-                                idGame: gameId
-                                visible: (idGame == 1) ? true : false
-                            }
-                        }
-
-                        Text {
-                            id: summOfResult
-                            text: qsTr("The summ " + summOfBalls)
-                        }
-                    }
-                }
+                delegate: listResultsDelegate
             }
-/*
-            // Таблица с результатами
-            //************************
-            TableView {
-                id: tableResults
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: parent.height / 2
-                anchors.margins: 5
-
-                rowDelegate: Component {
-                    Rectangle {
-                        height: 24
-
-                        Behavior on height{ NumberAnimation{} }
-
-                        color: styleData.selected ? "#448" : (styleData.alternate? "#eee" : "#fff")
-                        BorderImage{
-                            id: selected
-                            anchors.fill: parent
-                            visible: styleData.selected
-                            border{left:2; right:2; top:2; bottom:2}
-                            SequentialAnimation {
-                                running: true; loops: Animation.Infinite
-                                NumberAnimation { target:selected; property: "opacity"; to: 1.0; duration: 900}
-                                NumberAnimation { target:selected; property: "opacity"; to: 0.5; duration: 900}
-                            }
-                        }
-                    }
-                }
-                TableViewColumn {
-                    role: "num"
-                    title: "№"
-                    width: 40
-                }
-
-                TableViewColumn {
-                    role: "result"
-                    title: "Result"
-                    width: (gameId == 1) ? 180 : 130
-
-                    delegate: Item {
-                        property var arrayOfNumber : styleData.value.toString().split(" ")
-                        MyBall {
-                            id: ball_1
-                            anchors.margins: 5
-                            anchors.left: parent.left
-                            anchors.verticalCenter: parent.verticalCenter
-                            ballText: arrayOfNumber[0]
-                            idGame: gameId
-                        }
-                        MyBall {
-                            id: ball_2
-                            anchors.margins: 5
-                            anchors.left: ball_1.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            ballText: arrayOfNumber[1] !== undefined ? arrayOfNumber[1] : ""
-                            idGame: gameId
-                        }
-                        MyBall {
-                            id: ball_3
-                            anchors.margins: 5
-                            anchors.left: ball_2.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            ballText: arrayOfNumber[2] !== undefined ? arrayOfNumber[2] : ""
-                            idGame: gameId
-
-                        }
-                        MyBall {
-                            id: ball_4
-                            anchors.margins: 5
-                            anchors.left: ball_3.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            ballText: arrayOfNumber[3] !== undefined ? arrayOfNumber[3] : ""
-                            idGame: gameId
-                        }
-                        MyBall {
-                            id: ball_5
-                            anchors.margins: 5
-                            anchors.left: ball_4.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            ballText: arrayOfNumber[4] !== undefined ? arrayOfNumber[4] : ""
-                            idGame: gameId
-                        }
-                        MyBall {
-                            id: ball_6
-                            anchors.margins: 5
-                            anchors.left: ball_5.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            ballText: arrayOfNumber[5] !== undefined ? arrayOfNumber[5] : ""
-                            idGame: gameId
-                            visible: (idGame == 1) ? true : false
-
-                        }
-                        MyBall {
-                            id: ball_7
-                            anchors.margins: 5
-                            anchors.left: ball_6.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            ballText: arrayOfNumber[6] !== undefined ? arrayOfNumber[6] : ""
-                            idGame: gameId
-                            visible: (idGame == 1) ? true : false
-                        }
-                    }
-                }
-
-                TableViewColumn {
-                    role: "summ"
-                    title: "Summ"
-                }
-
-                model: ListModel {
-                    id : myModel
-                }
-            }
-            //************************
-            */
         }
 
         Item {
@@ -374,11 +258,15 @@ ApplicationWindow {
 
     Rectangle {
         id: mainMenu
-        //color: parent.color
+
         anchors.top: indicator.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
+        gradient: Gradient {
+            GradientStop {position: 0; color: "gray"}
+            GradientStop {position: 0.7; color: "black"}
+        }
 
         // строка с выбором игры и кол-вом дней выборки
         //**********************************************
