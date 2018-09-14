@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>MyBall.qml</file>
         <file>MyHeader.qml</file>
+        <file>MyGridView.qml</file>
+        <file>MyButton.qml</file>
     </qresource>
 </RCC>

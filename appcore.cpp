@@ -138,10 +138,15 @@ void appcore::receiveFromQMLCalculate()
         }
         for (int j = 0; j < pari.size() - 1; j++) {
             if (frequencyInRowPair.contains(pari.at(j) + " " + pari.at(j+1))) {
-                if (frequencyInRowPair.value(pari.at(j) + " " + pari.at(j+1)) == 0)
+                if (frequencyInRowPair.value(pari.at(j) + " " + pari.at(j+1)) == -1)
                     frequencyInRowPair[pari.at(j) + " " + pari.at(j+1)] = i;
             }
         }
+    }
+    QHashIterator<QString, int> itPair(frequencyInRowPair);
+    while (itPair.hasNext()) {
+        itPair.next();
+        emit semdPairResultToQML(itPair.key(), itPair.value());
     }
 }
 
@@ -150,12 +155,12 @@ void appcore::gameChanged(int id)
     versionOfGame = id;
     frequencyInRowPair.clear();
     if (id == 1) {
-        for (int i = 1; i < 43; i++) {
-            frequencyInRowPair.insert(QString::number(i) + " " + QString::number(i+1), 0);
+        for (int i = 1; i < 42; i++) {
+            frequencyInRowPair.insert(QString::number(i) + " " + QString::number(i+1), -1);
         }
     } else if (id == 3) {
-        for (int i = 1; i < 37; i++) {
-            frequencyInRowPair.insert(QString::number(i) + " " + QString::number(i+1), 0);
+        for (int i = 1; i < 36; i++) {
+            frequencyInRowPair.insert(QString::number(i) + " " + QString::number(i+1), -1);
         }
     }
 }

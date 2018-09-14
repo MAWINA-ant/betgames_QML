@@ -25,12 +25,13 @@ private:
     QStringList siteAdresses;
     QMap<int, int> frequencyInRow;
     QMap<int, int> frequencyAll;
-    QMap<QString, int> frequencyInRowPair;
+    QHash<QString, int> frequencyInRowPair;
 
 signals:
     void sendDataToQML(QString drawing, int summOfBalls);
     void sendResultToQML(int numberBall, int freqRow, int freqAll);
     void sendProgressStatus(double progressStatus);
+    void semdPairResultToQML(QString pairBalls, int freqRow);
 
 public slots:
     void receiveFromQMLGetData(int countDays);

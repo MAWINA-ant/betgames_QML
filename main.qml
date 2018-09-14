@@ -5,9 +5,11 @@ import QtQuick.Controls 2.1
 
 ApplicationWindow {
     visible: true
-    width: 485
+    width: 6 * oneBallsView.cellWidth
     height: 750
+    color: "lightgoldenrodyellow"
     title: qsTr("BetGames statistics")
+
 
     // номер розыгрыша
     property int number: 1
@@ -29,7 +31,11 @@ ApplicationWindow {
         }
 
         onSendResultToQML: {
-            modelCalculate.append({ball: numberBall, freqInRow: freqRow, freqAll: freqAll})
+            oneBallsModel.append({ball: numberBall, freqInRow: freqRow, freqAll: freqAll})
+        }
+
+        onSemdPairResultToQML: {
+            pairBallsModel.append({balls: pairBalls, freqInRow: freqRow})
         }
 
         // прогресс получения статистики
@@ -42,7 +48,6 @@ ApplicationWindow {
         id: mainView
 
         currentIndex: 1
-        //anchors.fill: parent
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -54,10 +59,10 @@ ApplicationWindow {
             // компонент=делегат для отображения в GridView с вычислениями
             //*************************************************************
             Component {
-                id: ballDelegate
+                id: oneBallsDelegate
                 Item {
-                    width: listCalculate.cellWidth
-                    height: listCalculate.cellHeight
+                    width: oneBallsView.cellWidth
+                    height: oneBallsView.cellHeight
 
                     MyBall {
                         id: theBall
@@ -95,29 +100,19 @@ ApplicationWindow {
                 }
             }
             //*************************************************************
-            GridView {
-                id: listCalculate
-                anchors.fill: parent
-                cellHeight: 70
-                cellWidth: 80
 
-                opacity: Math.max(0.5, 1.0 - Math.abs(verticalOvershoot) / height)
-
-                delegate: ballDelegate
-
-                model: modelCalculate
+            MyGridView {
+                id: oneBallsView
 
                 header: MyHeader {
                     headerText: "One ball"
                 }
-
-                highlight: Rectangle {
-                    color: "skyblue"; radius: 5
-                }
+                delegate: oneBallsDelegate
+                model: oneBallsModel
             }
 
             ListModel {
-                id : modelCalculate
+                id : oneBallsModel
             }
         }
 
@@ -132,10 +127,10 @@ ApplicationWindow {
 
                     Text {
                         id: numberResults
-                        anchors.left: parent.Left
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.margins: 5
-                        text: "№ " + num + "  "
+                        width: 50
+                        text: " № " + num + "  "
                     }
 
                     MyBall {
@@ -204,9 +199,8 @@ ApplicationWindow {
                         anchors.left: ball_7.right
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.margins: 5
-                        text: "Summ " + summ + "  "
+                        text: " Summ " + summ
                     }
-
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
@@ -225,7 +219,7 @@ ApplicationWindow {
                     headerText: "All statistics"
                 }
                 highlight: Rectangle {
-                    color: "skyblue"
+                    color: "lightcyan"; radius: 5
                 }
                 highlightFollowsCurrentItem: true
 
@@ -239,9 +233,61 @@ ApplicationWindow {
 
         Item {
             id: thirdPage
-            Rectangle {
-                anchors.fill: parent
-                color: "blue"
+
+            // компонент=делегат для отображения в GridView с вычислениями
+            //*************************************************************
+            Component {
+                id: pairBallsDelegate
+                Item {
+                    width: pairBallsView.cellWidth
+                    height: pairBallsView.cellHeight
+                    MyBall {
+                        id: ball_1
+                        anchors.margins: 5
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        ballText: balls.split(" ")[0] !== undefined ? balls.split(" ")[0] : ""
+                        idGame: gameId
+                    }
+                    MyBall {
+                        id: ball_2
+                        anchors.margins: 5
+                        anchors.left: ball_1.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        ballText: balls.split(" ")[1] !== undefined ? balls.split(" ")[1] : ""
+                        idGame: gameId
+                    }
+                    Text {
+                        id: inRow
+                        anchors.bottom: parent.bottom
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.margins: 5
+                        text: '<b>In a row:</b> ' + freqInRow
+                        color: freqInRow > 150 ? "red" : "black"
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            parent.GridView.view.currentIndex = index
+                        }
+                    }
+                }
+            }
+            //*************************************************************
+
+            MyGridView {
+                id: pairBallsView
+
+                header: MyHeader {
+                    headerText: "Pair consecutive balls"
+                }
+                delegate: pairBallsDelegate
+                model: pairBallsModel
+            }
+
+            ListModel {
+                id : pairBallsModel
             }
         }
     }
@@ -264,13 +310,14 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.right: parent.right
         gradient: Gradient {
-            GradientStop {position: 0; color: "gray"}
-            GradientStop {position: 0.7; color: "black"}
+            GradientStop {position: 0; color: "paleturquoise"}
+            GradientStop {position: 0.7; color: "lightskyblue"}
         }
 
         // строка с выбором игры и кол-вом дней выборки
         //**********************************************
         Row {
+            //lightgoldenrodyellow
             id: statisticsSettings
             anchors.top: parent.top
             anchors.left: parent.left
@@ -289,7 +336,8 @@ ApplicationWindow {
                     }
                     appCore.gameChanged(gameId)
                     modelResults.clear()
-                    modelCalculate.clear()
+                    oneBallsModel.clear()
+                    pairBallsModel.clear()
                     progressGetResult.value = 0.0
                 }
             }
@@ -305,7 +353,8 @@ ApplicationWindow {
                     }
                     appCore.gameChanged(gameId)
                     modelResults.clear()
-                    modelCalculate.clear()
+                    oneBallsModel.clear()
+                    pairBallsModel.clear()
                     progressGetResult.value = 0.0
                 }
             }
@@ -331,11 +380,26 @@ ApplicationWindow {
         //*********************************************
         ProgressBar {
             id: progressGetResult
-            height: 25
+            height: 15
+            value: 0.0
             anchors.top: statisticsSettings.bottom
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 5
+
+            background: Rectangle {
+                color: "#e6e6e6"
+                radius: 5
+            }
+            contentItem: Rectangle {
+                anchors.left: progressGetResult.left
+                anchors.verticalCenter: progressGetResult.verticalCenter
+                width: progressGetResult.visualPosition * progressGetResult.width
+                height: progressGetResult.height
+                radius: 5
+                color: "#17a81a"
+            }
+
         }
         //*********************************************
 
@@ -350,28 +414,27 @@ ApplicationWindow {
             anchors.right: parent.right
             anchors.margins: 5
 
-            Button {
+            MyButton {
                 id: buttonGetStat
-                width: parent.width / 2
-                height: 30
-                text: qsTr("Get statistics")
 
+                text: qsTr("Get statistics")
                 onClicked: {
                     modelResults.clear()
-                    modelCalculate.clear()
+                    oneBallsModel.clear()
+                    pairBallsModel.clear()
                     number = 1
                     progressGetResult.value = 0.0
                     appCore.receiveFromQMLGetData(countDaysOfStats.value)
                 }
             }
 
-            Button {
+            MyButton {
                 id: buttonCompute
-                width: parent.width / 2
-                height: 30
+
                 text: qsTr("Compute")
                 onClicked: {
-                    modelCalculate.clear()
+                    oneBallsModel.clear()
+                    pairBallsModel.clear()
                     appCore.receiveFromQMLCalculate()
                 }
             }

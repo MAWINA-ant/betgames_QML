@@ -6,8 +6,8 @@ Rectangle {
     width: parent.width
     height: 30
     gradient: Gradient {
-        GradientStop {position: 0; color: "gray"}
-        GradientStop {position: 0.7; color: "black"}
+        GradientStop {position: 0; color: "paleturquoise"}
+        GradientStop {position: 0.7; color: "lightskyblue"}
     }
     Text {
         anchors.centerIn: parent

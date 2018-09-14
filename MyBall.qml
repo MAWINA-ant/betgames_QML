@@ -1,7 +1,6 @@
 import QtQuick 2.9
 
 Rectangle {
-    id: myBall
     property string ballText
     property string ballColor
     property int idGame
