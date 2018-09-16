@@ -5,20 +5,24 @@
 appcore::appcore(QObject *parent) : QObject(parent)
 {
     gameChanged(1);
+
+    manager = new QNetworkAccessManager(this);
+
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 }
 
 void appcore::receiveFromQMLGetData(int countDays) {
     parsedList.clear();
     currentRequest = 0;
     allPages = 0;
-    manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(replyFinished(QNetworkReply*)));
+
+    //*****************************************************************************
+    // подсчет даты для адреса сайта. Заполняется список адресов сайтов
     QDate dateForSiteAddress = QDate::currentDate();
     for (int i = 0; i < countDays; i++){
         if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3)
             dateForSiteAddress.setDate(dateForSiteAddress.year(), dateForSiteAddress.month(), dateForSiteAddress.day() - 1);
-        siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
+        siteAddress = "http://www.betgamesafrica.co.za/ext/game/results/testpartner/"
                     + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
         int countOfPages = 10;
         if (dateForSiteAddress == QDate::currentDate()) {
@@ -31,8 +35,9 @@ void appcore::receiveFromQMLGetData(int countDays) {
         }
         dateForSiteAddress = dateForSiteAddress.addDays(-1);
     }
+    //**************************************************************
     manager->get(QNetworkRequest(QUrl(siteAdresses.at(0))));
-    siteAdresses.removeFirst();
+    siteAdresses.removeFirst();  // удаляю выбранный адрес сайта
 }
 
 //****************************************
@@ -106,6 +111,7 @@ void appcore::receiveFromQMLCalculate()
 {
     frequencyInRow.clear();
     frequencyAll.clear();
+    gameChanged(versionOfGame);
     for (int i = 0; i < parsedList.size(); i++) {
         QStringList pari = parsedList.at(i).split(" ");
         pari.removeLast();

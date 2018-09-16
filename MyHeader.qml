@@ -4,7 +4,7 @@ Rectangle {
     property string headerText
 
     width: parent.width
-    height: 30
+    height: 40
     gradient: Gradient {
         GradientStop {position: 0; color: "paleturquoise"}
         GradientStop {position: 0.7; color: "lightskyblue"}

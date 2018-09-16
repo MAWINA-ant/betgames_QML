@@ -4,6 +4,7 @@ import QtQuick.Controls 2.1
 
 
 ApplicationWindow {
+    id: mainWindow
     visible: true
     width: 6 * oneBallsView.cellWidth
     height: 750
@@ -60,10 +61,10 @@ ApplicationWindow {
             //*************************************************************
             Component {
                 id: oneBallsDelegate
+
                 Item {
                     width: oneBallsView.cellWidth
                     height: oneBallsView.cellHeight
-
                     MyBall {
                         id: theBall
                         anchors.top: parent.top
@@ -79,7 +80,7 @@ ApplicationWindow {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.margins: 5
                         text: '<b>In a row:</b> ' + freqInRow
-                        color: freqInRow > 15 ? "red" : "black"
+                        color: freqInRow > 30 ? "red" : "black"
                     }
 
                     Text {
@@ -88,7 +89,7 @@ ApplicationWindow {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.margins: 5
                         text: '<b>All times:</b> ' + freqAll
-                        color: freqAll < (number / (statisticsSettings > 1 ? 7 : 6)) ? "green" : "black"
+                        color: freqAll < (number / (statisticsSettings > 1 ? 8 : 7)) ? "green" : "black"
                     }
 
                     MouseArea {
@@ -219,7 +220,10 @@ ApplicationWindow {
                     headerText: "All statistics"
                 }
                 highlight: Rectangle {
-                    color: "lightcyan"; radius: 5
+                    color: "lightcyan"
+                    radius: 5
+                    border.color: "black"
+                    border.width: 2
                 }
                 highlightFollowsCurrentItem: true
 
@@ -238,11 +242,12 @@ ApplicationWindow {
             //*************************************************************
             Component {
                 id: pairBallsDelegate
+
                 Item {
                     width: pairBallsView.cellWidth
                     height: pairBallsView.cellHeight
                     MyBall {
-                        id: ball_1
+                        id: ball_1                      
                         anchors.margins: 5
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
@@ -263,15 +268,14 @@ ApplicationWindow {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.margins: 5
                         text: '<b>In a row:</b> ' + freqInRow
-                        color: freqInRow > 150 ? "red" : "black"
+                        color: freqInRow > 300 ? "red" : "black"
                     }
-
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
                             parent.GridView.view.currentIndex = index
                         }
-                    }
+                    }                   
                 }
             }
             //*************************************************************
@@ -372,6 +376,7 @@ ApplicationWindow {
                 value: 1
                 from: 1
                 to: 365
+
             }
         }
         //**********************************************
@@ -399,7 +404,13 @@ ApplicationWindow {
                 radius: 5
                 color: "#17a81a"
             }
-
+            onValueChanged: {
+                if (value == 1) {
+                    oneBallsModel.clear()
+                    pairBallsModel.clear()
+                    appCore.receiveFromQMLCalculate()
+                }
+            }
         }
         //*********************************************
 
@@ -431,11 +442,9 @@ ApplicationWindow {
             MyButton {
                 id: buttonCompute
 
-                text: qsTr("Compute")
+                text: qsTr("Quit")
                 onClicked: {
-                    oneBallsModel.clear()
-                    pairBallsModel.clear()
-                    appCore.receiveFromQMLCalculate()
+                    mainWindow.close()
                 }
             }
         }

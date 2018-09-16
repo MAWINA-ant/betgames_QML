@@ -4,7 +4,7 @@ import QtQuick.Controls 2.1
 Button {
     id: myButton
     width: parent.width / 2
-    height: 30
+    height: 40
 
     contentItem: Text {
          text: myButton.text
