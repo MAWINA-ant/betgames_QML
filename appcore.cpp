@@ -22,7 +22,7 @@ void appcore::receiveFromQMLGetData(int countDays) {
     for (int i = 0; i < countDays; i++){
         if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3)
             dateForSiteAddress.setDate(dateForSiteAddress.year(), dateForSiteAddress.month(), dateForSiteAddress.day() - 1);
-        siteAddress = "http://www.betgamesafrica.co.za/ext/game/results/testpartner/"
+        siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
                     + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
         int countOfPages = 10;
         if (dateForSiteAddress == QDate::currentDate()) {

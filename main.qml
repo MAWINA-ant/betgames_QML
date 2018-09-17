@@ -1,13 +1,14 @@
 import QtQuick 2.9
 import QtQuick.Controls 1.4
 import QtQuick.Controls 2.1
+import QtMultimedia 5.9
 
 
 ApplicationWindow {
     id: mainWindow
     visible: true
     width: 6 * oneBallsView.cellWidth
-    height: 750
+    height: 1000
     color: "lightgoldenrodyellow"
     title: qsTr("BetGames statistics")
 
@@ -33,6 +34,10 @@ ApplicationWindow {
 
         onSendResultToQML: {
             oneBallsModel.append({ball: numberBall, freqInRow: freqRow, freqAll: freqAll})
+            if (freqRow > 10) {
+                //sirena.play()
+
+            }
         }
 
         onSemdPairResultToQML: {
@@ -52,7 +57,7 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: parent.height - 120
+        height: parent.height - mainMenu.height
 
         Item {
             id: firstPage
@@ -65,6 +70,7 @@ ApplicationWindow {
                 Item {
                     width: oneBallsView.cellWidth
                     height: oneBallsView.cellHeight
+
                     MyBall {
                         id: theBall
                         anchors.top: parent.top
@@ -79,6 +85,7 @@ ApplicationWindow {
                         anchors.top: theBall.bottom
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.margins: 5
+                        font.pointSize: 10
                         text: '<b>In a row:</b> ' + freqInRow
                         color: freqInRow > 30 ? "red" : "black"
                     }
@@ -88,6 +95,7 @@ ApplicationWindow {
                         anchors.top: inRow.bottom
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.margins: 5
+                        font.pointSize: 10
                         text: '<b>All times:</b> ' + freqAll
                         color: freqAll < (number / (statisticsSettings > 1 ? 8 : 7)) ? "green" : "black"
                     }
@@ -96,6 +104,7 @@ ApplicationWindow {
                         anchors.fill: parent
                         onClicked: {
                             parent.GridView.view.currentIndex = index
+
                         }
                     }
                 }
@@ -124,13 +133,14 @@ ApplicationWindow {
                 id: listResultsDelegate
 
                 Item {
-                    width: parent.width; height: 30
+                    width: parent.width; height: 40
 
                     Text {
                         id: numberResults
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.margins: 5
-                        width: 50
+                        width: 60
+                        font.pointSize: 12
                         text: " № " + num + "  "
                     }
 
@@ -200,6 +210,7 @@ ApplicationWindow {
                         anchors.left: ball_7.right
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.margins: 5
+                        font.pointSize: 12
                         text: " Summ " + summ
                     }
                     MouseArea {
@@ -267,8 +278,9 @@ ApplicationWindow {
                         anchors.bottom: parent.bottom
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.margins: 5
+                        font.pointSize: 10
                         text: '<b>In a row:</b> ' + freqInRow
-                        color: freqInRow > 300 ? "red" : "black"
+                        color: freqInRow > 500 ? "red" : "black"
                     }
                     MouseArea {
                         anchors.fill: parent
@@ -308,8 +320,9 @@ ApplicationWindow {
 
     Rectangle {
         id: mainMenu
+        height: 130
 
-        anchors.top: indicator.bottom
+        //anchors.top: indicator.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
@@ -321,7 +334,6 @@ ApplicationWindow {
         // строка с выбором игры и кол-вом дней выборки
         //**********************************************
         Row {
-            //lightgoldenrodyellow
             id: statisticsSettings
             anchors.top: parent.top
             anchors.left: parent.left
@@ -366,6 +378,7 @@ ApplicationWindow {
             Text {
                 id: countDaysLabel
                 width: parent.width / 4
+                font.pointSize: 12
                 text: qsTr("Days of statistics: ")
                 anchors.verticalCenter: parent.verticalCenter
             }
@@ -418,7 +431,6 @@ ApplicationWindow {
         //*********************************************************
         Row {
             id: buttonsMenu
-            height: 30
             anchors.top: progressGetResult.bottom
             anchors.bottom: parent.bottom
             anchors.left: parent.left
@@ -427,7 +439,6 @@ ApplicationWindow {
 
             MyButton {
                 id: buttonGetStat
-
                 text: qsTr("Get statistics")
                 onClicked: {
                     modelResults.clear()
@@ -441,7 +452,6 @@ ApplicationWindow {
 
             MyButton {
                 id: buttonCompute
-
                 text: qsTr("Quit")
                 onClicked: {
                     mainWindow.close()
@@ -450,4 +460,22 @@ ApplicationWindow {
         }
         //*********************************************************
     }
+
+    Audio {
+        id: sirena
+        source: "E:/Muzhichkov/Qt/Programmes/7-42_QML/betgames/sounds/00182.mp3"
+    }
+
+    Timer {
+        interval: 300000; running: true; repeat: true
+        onTriggered: {
+            modelResults.clear()
+            oneBallsModel.clear()
+            pairBallsModel.clear()
+            number = 1
+            progressGetResult.value = 0.0
+            appCore.receiveFromQMLGetData(countDaysOfStats.value)
+        }
+    }
+
 }

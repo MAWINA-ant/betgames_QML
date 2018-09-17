@@ -5,9 +5,9 @@ Rectangle {
     property string ballColor
     property int idGame
 
-    width: 20
-    height: 20
-    radius: 10
+    width: 30
+    height: 30
+    radius: 15
     color: ballColor
     border.color: "black"
     border.width: 1

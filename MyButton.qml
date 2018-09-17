@@ -4,11 +4,11 @@ import QtQuick.Controls 2.1
 Button {
     id: myButton
     width: parent.width / 2
-    height: 40
+    height: 50
 
     contentItem: Text {
          text: myButton.text
-         font: myButton.font
+         font.pointSize: 20
          opacity: enabled ? 1.0 : 0.3
          color: myButton.down ? "#17a81a" : "red"
          horizontalAlignment: Text.AlignHCenter
@@ -17,9 +17,9 @@ Button {
         }
     background: Rectangle {
          implicitWidth: 100
-         implicitHeight: 40
+         implicitHeight: 50
          opacity: enabled ? 1 : 0.3
-         border.color: myButton.down ? "#17a81a" : "#21be2b"
+         border.color: myButton.down ? "#red" : "#17a81a"
          border.width: 1
          radius: 10
         }
