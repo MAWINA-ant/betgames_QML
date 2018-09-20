@@ -34,9 +34,8 @@ ApplicationWindow {
 
         onSendResultToQML: {
             oneBallsModel.append({ball: numberBall, freqInRow: freqRow, freqAll: freqAll})
-            if (freqRow > 10) {
+            if (freqRow > 5) {
                 //sirena.play()
-
             }
         }
 
@@ -67,9 +66,23 @@ ApplicationWindow {
             Component {
                 id: oneBallsDelegate
 
-                Item {
+                Rectangle {
+                    id: myFrame
+
+                    color: mainWindow.color
                     width: oneBallsView.cellWidth
                     height: oneBallsView.cellHeight
+
+                    radius: 5
+                    border.width: 2
+                    border.color: mainWindow.color
+
+
+
+                    Component.onCompleted:
+                        if (freqInRow > 35) {
+                            myAnimation.start()
+                        }
 
                     MyBall {
                         id: theBall
@@ -103,10 +116,24 @@ ApplicationWindow {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            parent.GridView.view.currentIndex = index
-
+                            //parent.GridView.view.currentIndex = index
+                            myAnimation.stop()
+                            sirena.stop()
                         }
                     }
+
+
+                    PropertyAnimation {
+                        id: myAnimation
+                        loops: Animation.Infinite
+                        target: myFrame
+                        alwaysRunToEnd: true
+                        property: "color"
+                        from: "red"
+                        to: mainWindow.color
+                        duration: 1000
+                    }
+
                 }
             }
             //*************************************************************
@@ -441,6 +468,7 @@ ApplicationWindow {
                 id: buttonGetStat
                 text: qsTr("Get statistics")
                 onClicked: {
+                    sirena.stop()
                     modelResults.clear()
                     oneBallsModel.clear()
                     pairBallsModel.clear()
