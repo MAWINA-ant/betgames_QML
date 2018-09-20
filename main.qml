@@ -33,10 +33,7 @@ ApplicationWindow {
         }
 
         onSendResultToQML: {
-            oneBallsModel.append({ball: numberBall, freqInRow: freqRow, freqAll: freqAll})
-            if (freqRow > 5) {
-                //sirena.play()
-            }
+            oneBallsModel.append({ball: numberBall, freqInRow: freqRow, freqAll: freqAll})           
         }
 
         onSemdPairResultToQML: {
@@ -82,6 +79,7 @@ ApplicationWindow {
                     Component.onCompleted:
                         if (freqInRow > 35) {
                             myAnimation.start()
+                            sirena.play()
                         }
 
                     MyBall {
@@ -491,7 +489,7 @@ ApplicationWindow {
 
     Audio {
         id: sirena
-        source: "E:/Muzhichkov/Qt/Programmes/7-42_QML/betgames/sounds/00182.mp3"
+        source: "qrc:///sounds/00182.mp3"
     }
 
     Timer {
