@@ -20,11 +20,13 @@ void appcore::receiveFromQMLGetData(int countDays) {
     // подсчет даты для адреса сайта. Заполняется список адресов сайтов
     QDate dateForSiteAddress = QDate::currentDate();
     for (int i = 0; i < countDays; i++){
-        if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3)
+        int countOfPages = 10;
+        if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3) {
             dateForSiteAddress.setDate(dateForSiteAddress.year(), dateForSiteAddress.month(), dateForSiteAddress.day() - 1);
+            //countOfPages--;
+        }
         siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
                     + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
-        int countOfPages = 10;
         if (dateForSiteAddress == QDate::currentDate()) {
             int fiveMinuteCount = ((QTime::currentTime().hour() - 3) * 60 + QTime::currentTime().minute()) / 5;
             countOfPages = fiveMinuteCount % 30 > 0 ? fiveMinuteCount / 30 + 1: fiveMinuteCount / 30;
