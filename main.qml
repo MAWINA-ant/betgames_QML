@@ -66,6 +66,8 @@ ApplicationWindow {
                 Rectangle {
                     id: myFrame
 
+                    property bool isChecked: false
+
                     color: mainWindow.color
                     width: oneBallsView.cellWidth
                     height: oneBallsView.cellHeight
@@ -80,6 +82,7 @@ ApplicationWindow {
                         if (freqInRow > 35) {
                             myAnimation.start()
                             sirena.play()
+                            myFrame.border.color = "black"
                         }
 
                     MyBall {
@@ -114,9 +117,25 @@ ApplicationWindow {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            //parent.GridView.view.currentIndex = index
+                           // while (index < 42) {
+
+                           // }
+                            if (!isChecked) {
+                                color = "lightcyan"
+                                border.color = "black"
+                                isChecked = true
+                            } else {
+                                color = mainWindow.color
+                                border.color = mainWindow.color
+                                isChecked = false
+                            }
+
+                        }
+                        onDoubleClicked: {
                             myAnimation.stop()
                             sirena.stop()
+                            parent.border.color = mainWindow.color
+                            color = mainWindow.color
                         }
                     }
 
@@ -125,6 +144,7 @@ ApplicationWindow {
                         id: myAnimation
                         loops: Animation.Infinite
                         target: myFrame
+
                         alwaysRunToEnd: true
                         property: "color"
                         from: "red"
@@ -160,6 +180,8 @@ ApplicationWindow {
                 Item {
                     width: parent.width; height: 40
 
+                    property var myArray : result.split(" ")
+
                     Text {
                         id: numberResults
                         anchors.verticalCenter: parent.verticalCenter
@@ -168,8 +190,20 @@ ApplicationWindow {
                         font.pointSize: 12
                         text: " № " + num + "  "
                     }
-
-                    MyBall {
+                    Row {
+                        id: myRow
+                        anchors.left: numberResults.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: 5
+                        Repeater {
+                            model: gameId == 1 ? 7 : 5
+                            MyBall {
+                                ballText: myArray[index] !== undefined ? myArray[index] : ""
+                                idGame: gameId
+                            }
+                        }
+                    }
+                    /*MyBall {
                         id: ball_1
                         anchors.margins: 5
                         anchors.left: numberResults.right
@@ -229,13 +263,14 @@ ApplicationWindow {
                         idGame: gameId
                         visible: (idGame == 1) ? true : false
                     }
-
+*/
                     Text {
                         id: summResult
-                        anchors.left: ball_7.right
+                        anchors.left: myRow.right
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.margins: 5
                         font.pointSize: 12
+                        color: summ > 200 ? "red" : "black"
                         text: " Summ " + summ
                     }
                     MouseArea {
@@ -305,7 +340,7 @@ ApplicationWindow {
                         anchors.margins: 5
                         font.pointSize: 10
                         text: '<b>In a row:</b> ' + freqInRow
-                        color: freqInRow > 500 ? "red" : "black"
+                        color: freqInRow > 400 ? "red" : "black"
                     }
                     MouseArea {
                         anchors.fill: parent

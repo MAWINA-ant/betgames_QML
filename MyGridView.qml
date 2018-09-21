@@ -8,10 +8,10 @@ GridView {
 
     opacity: Math.max(0.5, 1.0 - Math.abs(verticalOvershoot) / height)
 
-    highlight: Rectangle {
+    /*highlight: Rectangle {
         color: "lightcyan"
         radius: 5
         border.color: "black"
         border.width: 2
-    }
+    }*/
 }
