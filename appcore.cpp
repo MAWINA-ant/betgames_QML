@@ -11,6 +11,21 @@ appcore::appcore(QObject *parent) : QObject(parent)
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 }
 
+bool appcore::isValidRow(QString str)
+{
+    bool ok = true;
+    QStringList strList = str.split(" ");
+    strList.removeLast();
+    foreach (QString num, strList) {
+        num.toInt(&ok, 10);
+        if (!ok)
+            break;
+    }
+    if (strList.length() < 5)
+        ok = false;
+    return ok;
+}
+
 void appcore::receiveFromQMLGetData(int countDays) {
     parsedList.clear();
     currentRequest = 0;
@@ -21,10 +36,8 @@ void appcore::receiveFromQMLGetData(int countDays) {
     QDate dateForSiteAddress = QDate::currentDate();
     for (int i = 0; i < countDays; i++){
         int countOfPages = 10;
-        if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3) {
+        if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3)
             dateForSiteAddress.setDate(dateForSiteAddress.year(), dateForSiteAddress.month(), dateForSiteAddress.day() - 1);
-            //countOfPages--;
-        }
         siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
                     + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
         if (dateForSiteAddress == QDate::currentDate()) {
@@ -77,7 +90,9 @@ void appcore::replyFinished(QNetworkReply *reply)
     // в цикле отделяется все лишнее и заносится лист строк с числами через пробел
     //*****************************************************************************
     for (int i = 1; i < unparsedList.size(); i += 2) {
-        if (unparsedList.at(i).length() > 3 && unparsedList.at(i) != "Draw was canceled. ") {
+        if (!isValidRow(unparsedList.at(i)))
+            continue;
+        if (unparsedList.at(i) != "Draw was canceled. ") {
             parsedList.append(unparsedList.at(i));
             currentParsedList.append(unparsedList.at(i));
         }

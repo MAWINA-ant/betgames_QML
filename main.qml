@@ -147,7 +147,7 @@ ApplicationWindow {
 
                         alwaysRunToEnd: true
                         property: "color"
-                        from: "red"
+                        from: "lightcyan"
                         to: mainWindow.color
                         duration: 1000
                     }
@@ -270,7 +270,9 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.margins: 5
                         font.pointSize: 12
-                        color: summ > 200 ? "red" : "black"
+
+                        color: (gameId == 1 && (summ > 200 || summ < 101)) ? "red" : (gameId == 1 && (summ > 175 || summ < 126)) ? "blue" : "black"
+
                         text: " Summ " + summ
                     }
                     MouseArea {

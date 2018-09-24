@@ -27,6 +27,8 @@ private:
     QMap<int, int> frequencyAll;
     QHash<QString, int> frequencyInRowPair;
 
+    bool isValidRow(QString str);
+
 signals:
     void sendDataToQML(QString drawing, int summOfBalls);
     void sendResultToQML(int numberBall, int freqRow, int freqAll);
