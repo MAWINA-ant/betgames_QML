@@ -79,7 +79,7 @@ ApplicationWindow {
 
 
                     Component.onCompleted:
-                        if (freqInRow > 35) {
+                        if (freqInRow > 39) {
                             myAnimation.start()
                             sirena.play()
                             myFrame.border.color = "black"
@@ -101,7 +101,7 @@ ApplicationWindow {
                         anchors.margins: 5
                         font.pointSize: 10
                         text: '<b>In a row:</b> ' + freqInRow
-                        color: freqInRow > 30 ? "red" : "black"
+                        color: freqInRow > 35 ? "red" : "black"
                     }
 
                     Text {
@@ -117,9 +117,6 @@ ApplicationWindow {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                           // while (index < 42) {
-
-                           // }
                             if (!isChecked) {
                                 color = "lightcyan"
                                 border.color = "black"
@@ -203,67 +200,6 @@ ApplicationWindow {
                             }
                         }
                     }
-                    /*MyBall {
-                        id: ball_1
-                        anchors.margins: 5
-                        anchors.left: numberResults.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        ballText: result.split(" ")[0] !== undefined ? result.split(" ")[0] : ""
-                        idGame: gameId
-                    }
-                    MyBall {
-                        id: ball_2
-                        anchors.margins: 5
-                        anchors.left: ball_1.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        ballText: result.split(" ")[1] !== undefined ? result.split(" ")[1] : ""
-                        idGame: gameId
-                    }
-                    MyBall {
-                        id: ball_3
-                        anchors.margins: 5
-                        anchors.left: ball_2.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        ballText: result.split(" ")[2] !== undefined ? result.split(" ")[2] : ""
-                        idGame: gameId
-
-                    }
-                    MyBall {
-                        id: ball_4
-                        anchors.margins: 5
-                        anchors.left: ball_3.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        ballText: result.split(" ")[3] !== undefined ? result.split(" ")[3] : ""
-                        idGame: gameId
-                    }
-                    MyBall {
-                        id: ball_5
-                        anchors.margins: 5
-                        anchors.left: ball_4.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        ballText: result.split(" ")[4] !== undefined ? result.split(" ")[4] : ""
-                        idGame: gameId
-                    }
-                    MyBall {
-                        id: ball_6
-                        anchors.margins: 5
-                        anchors.left: ball_5.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        ballText: result.split(" ")[5] !== undefined ? result.split(" ")[5] : ""
-                        idGame: gameId
-                        visible: (idGame == 1) ? true : false
-
-                    }
-                    MyBall {
-                        id: ball_7
-                        anchors.margins: 5
-                        anchors.left: ball_6.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        ballText: result.split(" ")[6] !== undefined ? result.split(" ")[6] : ""
-                        idGame: gameId
-                        visible: (idGame == 1) ? true : false
-                    }
-*/
                     Text {
                         id: summResult
                         anchors.left: myRow.right
