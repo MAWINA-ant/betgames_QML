@@ -31,24 +31,26 @@ void appcore::receiveFromQMLGetData(int countDays) {
     currentRequest = 0;
     allPages = 0;
 
+
+    QDateTime dateTime = QDateTime::currentDateTime();
+    long long seconds = dateTime.toSecsSinceEpoch() - (60 * 60 * 3); // секунды по гринвичу
+    dateTime = QDateTime::fromSecsSinceEpoch(seconds);
+    int fiveMinuteCount = (dateTime.time().hour() * 60 + dateTime.time().minute()) / 5; // кол-во пятиминуток за сегодня
+    int countOfPages = fiveMinuteCount % 30 > 0 ? fiveMinuteCount / 30 + 1: fiveMinuteCount / 30; // кол-во страниц сайта за сегодня
+
     //*****************************************************************************
     // подсчет даты для адреса сайта. Заполняется список адресов сайтов
-    QDate dateForSiteAddress = QDate::currentDate();
-    for (int i = 0; i < countDays; i++){
-        int countOfPages = 10;
-        if (QTime::currentTime().hour() >= 0 && QTime::currentTime().hour() < 3)
-            dateForSiteAddress.setDate(dateForSiteAddress.year(), dateForSiteAddress.month(), dateForSiteAddress.day() - 1);
+    QDate dateForSiteAddress = dateTime.date();
+    for (int i = 0; i < countDays; i++){                   
         siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
                     + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
-        if (dateForSiteAddress == QDate::currentDate()) {
-            int fiveMinuteCount = ((QTime::currentTime().hour() - 3) * 60 + QTime::currentTime().minute()) / 5;
-            countOfPages = fiveMinuteCount % 30 > 0 ? fiveMinuteCount / 30 + 1: fiveMinuteCount / 30;
-        }
+
         for (int i = 1; i <= countOfPages; i++) {
             siteAdresses.append(siteAddress + QString::number(i));
             allPages++;
         }
         dateForSiteAddress = dateForSiteAddress.addDays(-1);
+        countOfPages = 10;
     }
     //**************************************************************
     manager->get(QNetworkRequest(QUrl(siteAdresses.at(0))));
@@ -62,7 +64,7 @@ void appcore::receiveFromQMLGetData(int countDays) {
 
 void appcore::replyFinished(QNetworkReply *reply)
 {
-    if (!reply->bytesAvailable()) {
+    if (!reply->bytesAvailable() || reply->error()) {
         QMessageBox errorMessage;
         errorMessage.setText("Problem with connection to internet");
         errorMessage.exec();
@@ -72,6 +74,7 @@ void appcore::replyFinished(QNetworkReply *reply)
     currentParsedList.clear();
     currentRequest++;
     QByteArray dataFromPage = reply->readAll();
+   // qDebug() << dataFromPage.size();
     QString stringFromPage(dataFromPage);
 
     QString plainTextString = QTextDocumentFragment::fromHtml(stringFromPage).toPlainText();
