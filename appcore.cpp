@@ -44,7 +44,6 @@ void appcore::receiveFromQMLGetData(int countDays) {
     for (int i = 0; i < countDays; i++){                   
         siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
                     + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
-
         for (int i = 1; i <= countOfPages; i++) {
             siteAdresses.append(siteAddress + QString::number(i));
             allPages++;
@@ -74,13 +73,10 @@ void appcore::replyFinished(QNetworkReply *reply)
     currentParsedList.clear();
     currentRequest++;
     QByteArray dataFromPage = reply->readAll();
-   // qDebug() << dataFromPage.size();
     QString stringFromPage(dataFromPage);
-
     QString plainTextString = QTextDocumentFragment::fromHtml(stringFromPage).toPlainText();
     plainTextString = plainTextString.mid(plainTextString.indexOf("Video"));
     QStringList unparsedList = plainTextString.split("\n");
-
     unparsedList.removeAt(0);
     unparsedList.removeAll(QString("Watch "));
     if (versionOfGame == 1)
@@ -180,6 +176,7 @@ void appcore::gameChanged(int id)
 {
     versionOfGame = id;
     frequencyInRowPair.clear();
+    frequencyInRow.clear();
     if (id == 1) {
         for (int i = 1; i < 42; i++) {
             frequencyInRowPair.insert(QString::number(i) + " " + QString::number(i+1), -1);
