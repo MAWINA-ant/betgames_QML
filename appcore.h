@@ -7,6 +7,8 @@
 #include <QTextDocument>
 #include <QTextDocumentFragment>
 
+#include "gamethread.h"
+
 class appcore : public QObject
 {
     Q_OBJECT

@@ -9,6 +9,11 @@ appcore::appcore(QObject *parent) : QObject(parent)
     manager = new QNetworkAccessManager(this);
 
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+    qDebug() << "Eto on ->" << QThread::currentThreadId();
+    gameThread *one = new gameThread(1, 2);
+    one->start();
+    gameThread *two = new gameThread(4, 5);
+    two->start();
 }
 
 bool appcore::isValidRow(QString str)
@@ -42,7 +47,7 @@ void appcore::receiveFromQMLGetData(int countDays) {
     // подсчет даты для адреса сайта. Заполняется список адресов сайтов
     QDate dateForSiteAddress = dateTime.date();
     for (int i = 0; i < countDays; i++){                   
-        siteAddress = "https://www.betgamesafrica.co.za/ext/game/results/testpartner/"
+        siteAddress = "http://www.betgamesafrica.co.za/ext/game/results/testpartner/"
                     + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
 
         for (int i = 1; i <= countOfPages; i++) {
@@ -74,25 +79,22 @@ void appcore::replyFinished(QNetworkReply *reply)
     currentParsedList.clear();
     currentRequest++;
     QByteArray dataFromPage = reply->readAll();
-   // qDebug() << dataFromPage.size();
     QString stringFromPage(dataFromPage);
-
     QString plainTextString = QTextDocumentFragment::fromHtml(stringFromPage).toPlainText();
     plainTextString = plainTextString.mid(plainTextString.indexOf("Video"));
     QStringList unparsedList = plainTextString.split("\n");
 
-    unparsedList.removeAt(0);
+    /*unparsedList.removeAt(0);
     unparsedList.removeAll(QString("Watch "));
     if (versionOfGame == 1)
         unparsedList.removeAll(QString("7 out of 42"));
     else if (versionOfGame == 3)
-        unparsedList.removeAll(QString("5 out of 36"));
+        unparsedList.removeAll(QString("5 out of 36"));*/
     unparsedList.removeLast();
-
     //*****************************************************************************
     // в цикле отделяется все лишнее и заносится лист строк с числами через пробел
     //*****************************************************************************
-    for (int i = 1; i < unparsedList.size(); i += 2) {
+    for (int i = 1; i < unparsedList.size(); i ++) {
         if (!isValidRow(unparsedList.at(i)))
             continue;
         if (unparsedList.at(i) != "Draw was canceled. ") {
@@ -179,6 +181,7 @@ void appcore::receiveFromQMLCalculate()
 void appcore::gameChanged(int id)
 {
     versionOfGame = id;
+    frequencyInRow.clear();
     frequencyInRowPair.clear();
     if (id == 1) {
         for (int i = 1; i < 42; i++) {

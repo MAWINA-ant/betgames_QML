@@ -7,7 +7,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    appcore.cpp
+    appcore.cpp \
+    gamethread.cpp
 
 RESOURCES += qml.qrc
 
@@ -18,7 +19,8 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    appcore.h
+    appcore.h \
+    gamethread.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
