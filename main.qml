@@ -175,7 +175,7 @@ ApplicationWindow {
                 id: listResultsDelegate
 
                 Item {
-                    width: parent.width; height: 40
+                    width: parent.width; height: myRow.height + 10
 
                     property var myArray : result.split(" ")
 
@@ -183,9 +183,9 @@ ApplicationWindow {
                         id: numberResults
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.margins: 5
-                        width: 60
+                        width: 40
                         font.pointSize: 12
-                        text: " № " + num + "  "
+                        text: " " + num + " "
                     }
                     Row {
                         id: myRow
@@ -209,7 +209,7 @@ ApplicationWindow {
 
                         color: (gameId == 1 && (summ > 200 || summ < 101)) ? "red" : (gameId == 1 && (summ > 175 || summ < 126)) ? "blue" : "black"
 
-                        text: " Summ " + summ
+                        text: " " + summ
                     }
                     MouseArea {
                         anchors.fill: parent
@@ -242,6 +242,7 @@ ApplicationWindow {
 
                 delegate: listResultsDelegate
             }
+
         }
 
         Item {

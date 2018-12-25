@@ -49,7 +49,6 @@ void appcore::receiveFromQMLGetData(int countDays) {
     for (int i = 0; i < countDays; i++){                   
         siteAddress = "http://www.betgamesafrica.co.za/ext/game/results/testpartner/"
                     + dateForSiteAddress.toString("yyyy-MM-dd") + "/" +  QString::number(versionOfGame) + "/";
-
         for (int i = 1; i <= countOfPages; i++) {
             siteAdresses.append(siteAddress + QString::number(i));
             allPages++;
@@ -85,6 +84,9 @@ void appcore::replyFinished(QNetworkReply *reply)
     QStringList unparsedList = plainTextString.split("\n");
 
     /*unparsedList.removeAt(0);
+=======
+    unparsedList.removeAt(0);
+>>>>>>> fcc4b0f61f95c954bde3ae66ae8c0e9343699986
     unparsedList.removeAll(QString("Watch "));
     if (versionOfGame == 1)
         unparsedList.removeAll(QString("7 out of 42"));
@@ -183,6 +185,7 @@ void appcore::gameChanged(int id)
     versionOfGame = id;
     frequencyInRow.clear();
     frequencyInRowPair.clear();
+    frequencyInRow.clear();
     if (id == 1) {
         for (int i = 1; i < 42; i++) {
             frequencyInRowPair.insert(QString::number(i) + " " + QString::number(i+1), -1);
