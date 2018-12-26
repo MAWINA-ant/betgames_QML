@@ -6,8 +6,9 @@
 #include <QNetworkReply>
 #include <QTextDocument>
 #include <QTextDocumentFragment>
+#include <QThread>
 
-#include "gamethread.h"
+#include "abstractgameclass.h"
 
 class appcore : public QObject
 {
@@ -15,7 +16,7 @@ class appcore : public QObject
 
 public:
 
-    explicit appcore(QObject *parent = 0);
+    explicit appcore(QObject *parent = nullptr);
 
 private:
     QString siteAddress;            // адрес сайта
@@ -31,6 +32,8 @@ private:
 
     bool isValidRow(QString str);
 
+    QWebEngineView *view;
+
 signals:
     void sendDataToQML(QString drawing, int summOfBalls);
     void sendResultToQML(int numberBall, int freqRow, int freqAll);
@@ -42,6 +45,8 @@ public slots:
     void receiveFromQMLCalculate();
     void gameChanged(int id);
     void replyFinished(QNetworkReply *reply);
+
+    void loaded();
 };
 
 

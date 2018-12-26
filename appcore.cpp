@@ -1,6 +1,5 @@
 #include "appcore.h"
 #include <QMessageBox>
-#include <QDebug>
 
 appcore::appcore(QObject *parent) : QObject(parent)
 {
@@ -9,11 +8,30 @@ appcore::appcore(QObject *parent) : QObject(parent)
     manager = new QNetworkAccessManager(this);
 
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-    qDebug() << "Eto on ->" << QThread::currentThreadId();
-    gameThread *one = new gameThread(1, 2);
-    one->start();
-    gameThread *two = new gameThread(4, 5);
-    two->start();
+    qDebug() << "Eto appcore thread ->" << QThread::currentThreadId();
+
+    QThread *first = new QThread();
+    abstractGameClass *firstGame = new abstractGameClass(1, 300);
+    firstGame->moveToThread(first);
+    first->start();
+
+    QThread *second = new QThread();
+    abstractGameClass *secondGame = new abstractGameClass(3, 300);
+    secondGame->moveToThread(second);
+    second->start();
+
+    QThread *third = new QThread();
+    abstractGameClass *thirdGame = new abstractGameClass(4, 300);
+    thirdGame->moveToThread(third);
+    third->start();
+
+    /*view = new QWebEngineView();
+
+         connect(view->page(), SIGNAL(loadFinished(bool)), this, SLOT(loaded()));
+         //view->show();
+         view->load(QUrl("https://1xbet.betgamestv.eu/ext/game/results/1xbet/2018-12-26/1/1/"));*/
+
+
 }
 
 bool appcore::isValidRow(QString str)
@@ -121,6 +139,14 @@ void appcore::replyFinished(QNetworkReply *reply)
         manager->get(QNetworkRequest(QUrl(siteAdresses.at(0))));
         siteAdresses.removeFirst();
     }
+}
+
+void appcore::loaded()
+{
+    view->page()->toHtml([](const QString &result) {
+        qDebug() << "dasdassad";
+              qDebug()<<result;
+        });
 }
 
 //**************************************
