@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += quick qml quickwidgets core gui network webenginewidgets
+QT += quick qml quickwidgets core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -8,7 +8,8 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     appcore.cpp \
-    abstractgameclass.cpp
+    abstractgameclass.cpp \
+    fivebet.cpp
 
 RESOURCES += qml.qrc
 
@@ -20,7 +21,8 @@ include(deployment.pri)
 
 HEADERS += \
     appcore.h \
-    abstractgameclass.h
+    abstractgameclass.h \
+    fivebet.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -32,8 +32,6 @@ private:
 
     bool isValidRow(QString str);
 
-    QWebEngineView *view;
-
 signals:
     void sendDataToQML(QString drawing, int summOfBalls);
     void sendResultToQML(int numberBall, int freqRow, int freqAll);
@@ -45,8 +43,6 @@ public slots:
     void receiveFromQMLCalculate();
     void gameChanged(int id);
     void replyFinished(QNetworkReply *reply);
-
-    void loaded();
 };
 
 
