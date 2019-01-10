@@ -1,14 +1,14 @@
-#ifndef FIVEBET_H
-#define FIVEBET_H
+#ifndef SEVENBET_H
+#define SEVENBET_H
 
 #include "abstractgameclass.h"
 
-class fivebet : public abstractGameClass
+class sevenbet : abstractGameClass
 {
     Q_OBJECT
 
 public:
-    explicit fivebet();
+    explicit sevenbet();
 
 private:
     QMap<int, int> notFallOut;
@@ -21,4 +21,4 @@ public slots:
     void getDataFromSite();
 };
 
-#endif // FIVEBET_H
+#endif // SEVENBET_H

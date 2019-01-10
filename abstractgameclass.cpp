@@ -11,7 +11,7 @@ abstractGameClass::abstractGameClass(quint8 id, quint16 intervalSec, QObject *pa
 
     QDateTime dateTime = QDateTime::currentDateTime();
     dateTime.setTime(QTime(0,0,0));
-    long long seconds = dateTime.toSecsSinceEpoch() + 3600;
+    qint64 seconds = dateTime.toSecsSinceEpoch();
     siteAddress = "https://tvbetframe6.com/tvbet/getdata?action=filterResults&date=" + QString::number(seconds);
     manager = new QNetworkAccessManager();
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
@@ -43,8 +43,7 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
         QString currentUrl = siteAddress + "&page=" + QString::number(currentPage) + "&clientId=1&lng=ru";
         manager->get(QNetworkRequest(QUrl(currentUrl)));
     } else {
-        documentJsonList.append(documentJson);
-        currentPage++;
+        documentJsonList.append(documentJson);       
         if (currentPage > pageCount) {
             pageCount = 0;
             currentPage = 1;
@@ -53,6 +52,7 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
         }
         QString currentUrl = siteAddress + "&page=" + QString::number(currentPage) + "&clientId=1&lng=ru";
         manager->get(QNetworkRequest(QUrl(currentUrl)));
+        currentPage++;
     }
 }
 

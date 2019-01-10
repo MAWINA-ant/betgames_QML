@@ -1,34 +1,29 @@
-#include "fivebet.h"
+#include "weelbet.h"
 
-fivebet::fivebet() : abstractGameClass(6, 180)
+weelbet::weelbet() : abstractGameClass (2, 180)
 {
     siteAddress += "&game_type=" + QString::number(gameId) + "&my=0";
     manager->get(QNetworkRequest(QUrl(siteAddress)));
     connect(this, SIGNAL(startGettingData()), this, SLOT(getDataFromSite()));
 }
 
-void fivebet::parserJsonDocPage(QJsonDocument document)
+void weelbet::parserJsonDocPage(QJsonDocument document)
 {
     QJsonObject jsonObject = document.object().value("results").toObject();
     QJsonArray jsonArray = jsonObject["games"].toArray();
     foreach (const QJsonValue & value, jsonArray) {
+        QPair<QString, QString> draw;
         QJsonObject obj = value.toObject();
-        QJsonArray arrayResult = obj["result"].toArray();
-        QList<QString> draw;
-        foreach (const QJsonValue & val, arrayResult) {
-            QJsonObject object = val.toObject();
-            draw.append(object["number"].toString());
-        }
+        draw.first = obj["result"].toObject()["number"].toString();
+        draw.second = obj["result"].toObject()["color"].toString();
         drawList.append(draw);
     }
 }
 
-void fivebet::getDataFromSite()
+void weelbet::getDataFromSite()
 {
     foreach (QJsonDocument doc, documentJsonList) {
         parserJsonDocPage(doc);
     }
+    qDebug() << drawList;
 }
-
-
-

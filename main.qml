@@ -466,7 +466,7 @@ ApplicationWindow {
         source: "qrc:///sounds/00182.mp3"
     }
 
-    Timer {
+    /*Timer {
         interval: 300000; running: true; repeat: true
         onTriggered: {
             modelResults.clear()
@@ -476,6 +476,6 @@ ApplicationWindow {
             progressGetResult.value = 0.0
             appCore.receiveFromQMLGetData(countDaysOfStats.value)
         }
-    }
+    }*/
 
 }

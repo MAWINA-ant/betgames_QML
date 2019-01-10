@@ -9,6 +9,8 @@
 #include <QThread>
 
 #include "fivebet.h"
+#include "sevenbet.h"
+#include "weelbet.h"
 
 class appcore : public QObject
 {

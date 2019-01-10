@@ -1,13 +1,13 @@
-#include "fivebet.h"
+#include "sevenbet.h"
 
-fivebet::fivebet() : abstractGameClass(6, 180)
+sevenbet::sevenbet() : abstractGameClass(7, 180)
 {
     siteAddress += "&game_type=" + QString::number(gameId) + "&my=0";
     manager->get(QNetworkRequest(QUrl(siteAddress)));
     connect(this, SIGNAL(startGettingData()), this, SLOT(getDataFromSite()));
 }
 
-void fivebet::parserJsonDocPage(QJsonDocument document)
+void sevenbet::parserJsonDocPage(QJsonDocument document)
 {
     QJsonObject jsonObject = document.object().value("results").toObject();
     QJsonArray jsonArray = jsonObject["games"].toArray();
@@ -23,12 +23,11 @@ void fivebet::parserJsonDocPage(QJsonDocument document)
     }
 }
 
-void fivebet::getDataFromSite()
+void sevenbet::getDataFromSite()
 {
     foreach (QJsonDocument doc, documentJsonList) {
         parserJsonDocPage(doc);
     }
 }
-
 
 

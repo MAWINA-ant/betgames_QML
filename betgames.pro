@@ -9,7 +9,9 @@ CONFIG += c++11
 SOURCES += main.cpp \
     appcore.cpp \
     abstractgameclass.cpp \
-    fivebet.cpp
+    fivebet.cpp \
+    sevenbet.cpp \
+    weelbet.cpp
 
 RESOURCES += qml.qrc
 
@@ -22,7 +24,9 @@ include(deployment.pri)
 HEADERS += \
     appcore.h \
     abstractgameclass.h \
-    fivebet.h
+    fivebet.h \
+    sevenbet.h \
+    weelbet.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

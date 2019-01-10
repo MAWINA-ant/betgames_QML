@@ -24,7 +24,6 @@ public:
 
 private:
     quint16 gameIntervalSec; // интервал между розыгрышами в секундах
-    quint8 gameId; //номер игры на сайте (1-6)
     QTimer gameTimer; // таймер для обновления данных после каждого розыгрыша
     QByteArray gameData; // данные с сайта
     quint8 pageCount = 0; // кол-во страниц статистики
@@ -32,6 +31,7 @@ private:
 
 protected:
     QString siteAddress; // строка с URL для получения данных
+    quint8 gameId; //номер игры на сайте
     QNetworkAccessManager *manager;
     QList<QJsonDocument> documentJsonList;
 
