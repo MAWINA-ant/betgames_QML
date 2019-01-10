@@ -8,7 +8,7 @@
 #include <QTextDocumentFragment>
 #include <QThread>
 
-#include "abstractgameclass.h"
+#include "fivebet.h"
 
 class appcore : public QObject
 {

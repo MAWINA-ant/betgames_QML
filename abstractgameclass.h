@@ -7,26 +7,43 @@
 #include <QDateTime>
 #include <QByteArray>
 #include <QThread>
+#include <QMessageBox>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 class abstractGameClass : public QObject
 {
     Q_OBJECT
 public:
-    abstractGameClass(QObject *parent = nullptr) {} // конструктор по умолчанию
-    abstractGameClass(quint8 pageId, quint16 intervalSec, QObject *parent = nullptr);
+    abstractGameClass(QObject *parent = nullptr) : QObject(parent), gameIntervalSec(180), gameId(1) {} // конструктор по умолчанию (вдруг понадобится)
+    abstractGameClass(quint8 id, quint16 intervalSec, QObject *parent = nullptr); // если вдруг нужно поменять интервал
     ~abstractGameClass();
 
 private:
-    QString siteAddres; // адресс сайта статистики
     quint16 gameIntervalSec; // интервал между розыгрышами в секундах
-    quint8 gamePageId; //номер страницы игры на сайте (1-6)
+    quint8 gameId; //номер игры на сайте (1-6)
     QTimer gameTimer; // таймер для обновления данных после каждого розыгрыша
     QByteArray gameData; // данные с сайта
+    quint8 pageCount = 0; // кол-во страниц статистики
+    quint8 currentPage = 1;
+
+protected:
+    QString siteAddress; // строка с URL для получения данных
+    QNetworkAccessManager *manager;
+    QList<QJsonDocument> documentJsonList;
+
+    virtual void parserJsonDocPage(QJsonDocument) = 0;
 
 signals:
+    void startGettingData();
 
 public slots:
-    void getDataFromSite();
+    virtual void getDataFromSite() = 0;
+
+    void replyFinished(QNetworkReply*);
 };
 
 #endif // ABSTRACTGAMECLASS_H

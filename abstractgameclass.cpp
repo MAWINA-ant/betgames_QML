@@ -1,18 +1,20 @@
 #include "abstractgameclass.h"
-#include <QEventLoop>
 
-abstractGameClass::abstractGameClass(quint8 pageId, quint16 intervalSec, QObject *parent) : QObject(parent),
+abstractGameClass::abstractGameClass(quint8 id, quint16 intervalSec, QObject *parent) : QObject(parent),
                                                                                             gameIntervalSec(intervalSec),
-                                                                                            gamePageId(pageId)
+                                                                                            gameId(id)
 {
-
     //********************************************************************************
-    //
-    //
-    //
+    // время почему-то смещено на 1 час
+    // создаю менеджер работы с веб
     //********************************************************************************
 
-    siteAddres = "https://tvbetframe6.com/tvbet/getdata?action=filterResults&date=1546981200&game_type=6&my=0&page=1&clientId=1&lng=ru";
+    QDateTime dateTime = QDateTime::currentDateTime();
+    dateTime.setTime(QTime(0,0,0));
+    long long seconds = dateTime.toSecsSinceEpoch() + 3600;
+    siteAddress = "https://tvbetframe6.com/tvbet/getdata?action=filterResults&date=" + QString::number(seconds);
+    manager = new QNetworkAccessManager();
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 
     //********************************************************************************
 }
@@ -22,8 +24,35 @@ abstractGameClass::~abstractGameClass()
 
 }
 
-void abstractGameClass::getDataFromSite()
-{    
-
-
+void abstractGameClass::replyFinished(QNetworkReply *reply)
+{
+    // если нет соединени или нет данных или ошибка
+    if (!reply->bytesAvailable() || reply->error()) {
+        QMessageBox errorMessage;
+        errorMessage.setText("Problem with connection to internet");
+        errorMessage.exec();
+        return;
+    }
+    //************************************************
+    gameData = reply->readAll();
+    QJsonDocument documentJson = QJsonDocument::fromJson(gameData);
+    if (pageCount == 0){
+        QJsonObject objectJson = documentJson.object().value(QString("results")).toObject();
+        QJsonValue value = objectJson.value(QString("pageCount"));
+        pageCount = quint8(value.toInt()); // узнаем кол-во страниц всего
+        QString currentUrl = siteAddress + "&page=" + QString::number(currentPage) + "&clientId=1&lng=ru";
+        manager->get(QNetworkRequest(QUrl(currentUrl)));
+    } else {
+        documentJsonList.append(documentJson);
+        currentPage++;
+        if (currentPage > pageCount) {
+            pageCount = 0;
+            currentPage = 1;
+            emit startGettingData();
+            return;
+        }
+        QString currentUrl = siteAddress + "&page=" + QString::number(currentPage) + "&clientId=1&lng=ru";
+        manager->get(QNetworkRequest(QUrl(currentUrl)));
+    }
 }
+
