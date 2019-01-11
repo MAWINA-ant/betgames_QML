@@ -3,7 +3,7 @@
 
 #include "abstractgameclass.h"
 
-class sevenbet : abstractGameClass
+class sevenbet : public abstractGameClass
 {
     Q_OBJECT
 
@@ -16,6 +16,9 @@ private:
 
 protected:
     void parserJsonDocPage(QJsonDocument document);
+
+signals:
+    void sendDrawData(QString, int);
 
 public slots:
     void getDataFromSite();

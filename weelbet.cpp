@@ -25,5 +25,7 @@ void weelbet::getDataFromSite()
     foreach (QJsonDocument doc, documentJsonList) {
         parserJsonDocPage(doc);
     }
-    qDebug() << drawList;
+    for (int i = 0; i < drawList.size(); i++) {
+
+    }
 }

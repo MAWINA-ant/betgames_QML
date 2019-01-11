@@ -8,8 +8,9 @@ appcore::appcore(QObject *parent) : QObject(parent)
     manager = new QNetworkAccessManager(this);
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
     //fivebet *fiveBetGame = new fivebet();
-    //sevenbet *sevenBetGame = new sevenbet();
-    weelbet *weelBetGame = new weelbet();
+    sevenbet *sevenBetGame = new sevenbet();
+    connect(sevenBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
+    //weelbet *weelBetGame = new weelbet();
 }
 
 bool appcore::isValidRow(QString str)

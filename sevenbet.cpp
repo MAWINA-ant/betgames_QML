@@ -28,6 +28,15 @@ void sevenbet::getDataFromSite()
     foreach (QJsonDocument doc, documentJsonList) {
         parserJsonDocPage(doc);
     }
+    for (int i = 0; i < drawList.size(); i++) {
+        int sum = 0;
+        QString draw = "";
+        foreach (QString str, drawList.at(i)) {
+            sum += str.toInt();
+            draw.append(str + " ");
+        }
+        emit sendDrawData(draw, sum);
+    }
 }
 
 

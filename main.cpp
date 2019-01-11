@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
          * */
     context->setContextProperty("appCore", &appCore);
 
-
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();

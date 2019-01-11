@@ -10,8 +10,9 @@ abstractGameClass::abstractGameClass(quint8 id, quint16 intervalSec, QObject *pa
     //********************************************************************************
 
     QDateTime dateTime = QDateTime::currentDateTime();
+    qDebug() << dateTime;
     dateTime.setTime(QTime(0,0,0));
-    qint64 seconds = dateTime.toSecsSinceEpoch();
+    qint64 seconds = dateTime.toSecsSinceEpoch() + 3600;
     siteAddress = "https://tvbetframe6.com/tvbet/getdata?action=filterResults&date=" + QString::number(seconds);
     manager = new QNetworkAccessManager();
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
