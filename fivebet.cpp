@@ -2,7 +2,7 @@
 
 fivebet::fivebet() : abstractGameClass(6, 180)
 {
-    siteAddress += "&game_type=" + QString::number(gameId) + "&my=0";
+    siteAddress = siteAddress.arg(QString::number(dateSeconds)).arg(QString::number(gameId)).arg(QString::number(currentPage));
     manager->get(QNetworkRequest(QUrl(siteAddress)));
     connect(this, SIGNAL(startGettingData()), this, SLOT(getDataFromSite()));
 }

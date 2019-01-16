@@ -12,8 +12,7 @@ abstractGameClass::abstractGameClass(quint8 id, quint16 intervalSec, QObject *pa
     QDateTime dateTime = QDateTime::currentDateTime();
     qDebug() << dateTime;
     dateTime.setTime(QTime(0,0,0));
-    qint64 seconds = dateTime.toSecsSinceEpoch() + 3600;
-    siteAddress = "https://tvbetframe6.com/tvbet/getdata?action=filterResults&date=" + QString::number(seconds);
+    dateSeconds = dateTime.toSecsSinceEpoch();
     manager = new QNetworkAccessManager();
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 
@@ -41,7 +40,7 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
         QJsonObject objectJson = documentJson.object().value(QString("results")).toObject();
         QJsonValue value = objectJson.value(QString("pageCount"));
         pageCount = quint8(value.toInt()); // узнаем кол-во страниц всего
-        QString currentUrl = siteAddress + "&page=" + QString::number(currentPage) + "&clientId=1&lng=ru";
+        QString currentUrl = siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage)));
         manager->get(QNetworkRequest(QUrl(currentUrl)));
     } else {
         documentJsonList.append(documentJson);       
@@ -51,7 +50,8 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
             emit startGettingData();
             return;
         }
-        QString currentUrl = siteAddress + "&page=" + QString::number(currentPage) + "&clientId=1&lng=ru";
+        QString currentUrl = siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage)));
+        qDebug() << currentUrl;
         manager->get(QNetworkRequest(QUrl(currentUrl)));
         currentPage++;
     }

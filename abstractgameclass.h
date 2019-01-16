@@ -27,11 +27,13 @@ private:
     QTimer gameTimer; // таймер для обновления данных после каждого розыгрыша
     QByteArray gameData; // данные с сайта
     quint8 pageCount = 0; // кол-во страниц статистики
-    quint8 currentPage = 1;
+
 
 protected:
-    QString siteAddress; // строка с URL для получения данных
-    quint8 gameId; //номер игры на сайте
+    QString siteAddress = QString("https://tvbetframe6.com/tvbet/getdata?action=filterResults&date=%1&game_type=%2&my=0&page=%3&clientId=1&lng=ru"); // строка с URL для получения данных
+    qint64 dateSeconds;
+    int gameId; //номер игры на сайте
+    int currentPage = 1;
     QNetworkAccessManager *manager;
     QList<QJsonDocument> documentJsonList;
 

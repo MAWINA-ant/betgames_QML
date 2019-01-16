@@ -2,7 +2,6 @@
 
 sevenbet::sevenbet() : abstractGameClass(7, 180)
 {
-    siteAddress += "&game_type=" + QString::number(gameId) + "&my=0";
     manager->get(QNetworkRequest(QUrl(siteAddress)));
     connect(this, SIGNAL(startGettingData()), this, SLOT(getDataFromSite()));
 }
