@@ -19,6 +19,8 @@ protected:
 
 signals:
     void sendDrawData(QString, int);
+    void sendResultToQML(int numberBall, int freqRow);
+
 
 public slots:
     void getDataFromSite();

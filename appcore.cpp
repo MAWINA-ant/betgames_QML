@@ -10,6 +10,7 @@ appcore::appcore(QObject *parent) : QObject(parent)
     //fivebet *fiveBetGame = new fivebet();
     sevenbet *sevenBetGame = new sevenbet();
     connect(sevenBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
+    connect(sevenBetGame, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
     //weelbet *weelBetGame = new weelbet();
 }
 
@@ -147,7 +148,7 @@ void appcore::receiveFromQMLCalculate()
     QMapIterator<int, int> it(frequencyInRow);
     while (it.hasNext()) {
         it.next();
-        emit sendResultToQML(it.key(), it.value(), frequencyAll.value(it.key()));
+        emit sendResultToQML(it.key(), it.value());
     }
     for (int i = 0; i < parsedList.size(); i++) {
         QStringList pari = parsedList.at(i).split(" ");

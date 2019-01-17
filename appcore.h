@@ -36,7 +36,7 @@ private:
 
 signals:
     void sendDataToQML(QString drawing, int summOfBalls);
-    void sendResultToQML(int numberBall, int freqRow, int freqAll);
+    void sendResultToQML(int numberBall, int freqRow);
     void sendProgressStatus(double progressStatus);
     void semdPairResultToQML(QString pairBalls, int freqRow);
 

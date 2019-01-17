@@ -24,6 +24,7 @@ void sevenbet::parserJsonDocPage(QJsonDocument document)
 
 void sevenbet::getDataFromSite()
 {
+    qDebug() << documentJsonList.size();
     foreach (QJsonDocument doc, documentJsonList) {
         parserJsonDocPage(doc);
     }
@@ -31,10 +32,18 @@ void sevenbet::getDataFromSite()
         int sum = 0;
         QString draw = "";
         foreach (QString str, drawList.at(i)) {
-            sum += str.toInt();
+            int number = str.toInt();
+            sum += number;
+            if (!notFallOut.contains(number))
+                notFallOut.insert(number, i);
             draw.append(str + " ");
         }
         emit sendDrawData(draw, sum);
+    }
+    QMapIterator<int, int> it(notFallOut);
+    while (it.hasNext()) {
+        it.next();
+        emit sendResultToQML(it.key(), it.value());
     }
 }
 

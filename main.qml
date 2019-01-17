@@ -33,7 +33,7 @@ ApplicationWindow {
         }
 
         onSendResultToQML: {
-            oneBallsModel.append({ball: numberBall, freqInRow: freqRow, freqAll: freqAll})           
+            oneBallsModel.append({ball: numberBall, freqInRow: freqRow})
         }
 
         onSemdPairResultToQML: {
@@ -104,7 +104,7 @@ ApplicationWindow {
                         color: freqInRow > 35 ? "red" : "black"
                     }
 
-                    Text {
+                    /*Text {
                         id: allFreq
                         anchors.top: inRow.bottom
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -112,7 +112,7 @@ ApplicationWindow {
                         font.pointSize: 10
                         text: '<b>All times:</b> ' + freqAll
                         color: freqAll < (number / (statisticsSettings > 1 ? 8 : 7)) ? "green" : "black"
-                    }
+                    }*/
 
                     MouseArea {
                         anchors.fill: parent

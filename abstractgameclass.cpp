@@ -12,7 +12,7 @@ abstractGameClass::abstractGameClass(quint8 id, quint16 intervalSec, QObject *pa
     QDateTime dateTime = QDateTime::currentDateTime();
     qDebug() << dateTime;
     dateTime.setTime(QTime(0,0,0));
-    dateSeconds = dateTime.toSecsSinceEpoch();
+    dateSeconds = dateTime.toSecsSinceEpoch() - 82800;
     manager = new QNetworkAccessManager();
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 
@@ -43,7 +43,8 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
         QString currentUrl = siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage)));
         manager->get(QNetworkRequest(QUrl(currentUrl)));
     } else {
-        documentJsonList.append(documentJson);       
+        if (!documentJsonList.contains(documentJson))
+            documentJsonList.append(documentJson);
         if (currentPage > pageCount) {
             pageCount = 0;
             currentPage = 1;
