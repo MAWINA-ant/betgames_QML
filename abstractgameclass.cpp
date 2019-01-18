@@ -12,7 +12,7 @@ abstractGameClass::abstractGameClass(quint8 id, quint16 intervalSec, QObject *pa
     QDateTime dateTime = QDateTime::currentDateTime();
     qDebug() << dateTime;
     dateTime.setTime(QTime(0,0,0));
-    dateSeconds = dateTime.toSecsSinceEpoch() - 82800;
+    dateSeconds = dateTime.toSecsSinceEpoch();
     manager = new QNetworkAccessManager();
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 
@@ -37,14 +37,17 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
     gameData = reply->readAll();
     QJsonDocument documentJson = QJsonDocument::fromJson(gameData);
     if (pageCount == 0){
+        documentJsonList.clear();
         QJsonObject objectJson = documentJson.object().value(QString("results")).toObject();
         QJsonValue value = objectJson.value(QString("pageCount"));
         pageCount = quint8(value.toInt()); // узнаем кол-во страниц всего
         QString currentUrl = siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage)));
         manager->get(QNetworkRequest(QUrl(currentUrl)));
     } else {
-        if (!documentJsonList.contains(documentJson))
+        if (!documentJsonList.contains(documentJson)) {
             documentJsonList.append(documentJson);
+            emit sendProgressStatus(currentPage * 1.0 / pageCount, (gameId == 6 ? "5 из 36" : gameId == 2 ? "Колесо" : "7 из 42"));
+        }
         if (currentPage > pageCount) {
             pageCount = 0;
             currentPage = 1;

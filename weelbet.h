@@ -10,6 +10,7 @@ class weelbet : public abstractGameClass
 
 public:
     explicit weelbet();
+    void sendDataToQML();
 
 private:
     QList<QPair<QString, QString>> drawList; // список розыгрышей с номером и цветом

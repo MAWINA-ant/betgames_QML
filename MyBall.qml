@@ -22,7 +22,7 @@ Rectangle {
     }
 
     function setColor() {
-        if (idGame == 1) {
+        if (idGame == 7) {
             if (ballText == "1" || ballText == "3" || ballText == "5" || ballText == "8" || ballText == "10" || ballText == "12" || ballText == "13" || ballText == "15"
                     || ballText == "17" || ballText == "20" || ballText == "22" || ballText == "24" || ballText == "26" || ballText == "27" || ballText == "29"
                     || ballText == "32" || ballText == "34" || ballText == "36" || ballText == "37" || ballText == "39" || ballText == "41") {
@@ -33,7 +33,7 @@ Rectangle {
                 ballColor = "black"
             }
         }
-        else if (idGame == 3) {
+        else if (idGame == 6) {
             if (ballText == "1" || ballText == "2" || ballText == "3" || ballText == "4" || ballText == "5"
                     || ballText == "6" || ballText == "7" || ballText == "8" || ballText == "9" ) {
                 ballColor = "white"

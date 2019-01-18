@@ -1,6 +1,8 @@
 #ifndef SEVENBET_H
 #define SEVENBET_H
 
+#include <QPair>
+
 #include "abstractgameclass.h"
 
 class sevenbet : public abstractGameClass
@@ -9,10 +11,12 @@ class sevenbet : public abstractGameClass
 
 public:
     explicit sevenbet();
+    void sendDataToQML();
 
 private:
     QMap<int, int> notFallOut;
-    QList<QList<QString>> drawList;
+    QList<QStringList> drawList;
+    QList<QPair<QString, int>> drawListQML;
 
 protected:
     void parserJsonDocPage(QJsonDocument document);
@@ -20,7 +24,6 @@ protected:
 signals:
     void sendDrawData(QString, int);
     void sendResultToQML(int numberBall, int freqRow);
-
 
 public slots:
     void getDataFromSite();

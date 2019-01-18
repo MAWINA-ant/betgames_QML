@@ -15,7 +15,7 @@ ApplicationWindow {
 
     // номер розыгрыша
     property int number: 1
-    property int gameId: 1     // тип игры
+    property int gameId: 7     // тип игры
 
     /* С помощью объекта Connections
          * Устанавливаем соединение с классом ядра приложения
@@ -36,13 +36,10 @@ ApplicationWindow {
             oneBallsModel.append({ball: numberBall, freqInRow: freqRow})
         }
 
-        onSemdPairResultToQML: {
-            pairBallsModel.append({balls: pairBalls, freqInRow: freqRow})
-        }
-
         // прогресс получения статистики
         onSendProgressStatus: {
             progressGetResult.value = progressStatus
+            //progressText.text = progressGameType
         }
     }
 
@@ -104,16 +101,6 @@ ApplicationWindow {
                         color: freqInRow > 35 ? "red" : "black"
                     }
 
-                    /*Text {
-                        id: allFreq
-                        anchors.top: inRow.bottom
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.margins: 5
-                        font.pointSize: 10
-                        text: '<b>All times:</b> ' + freqAll
-                        color: freqAll < (number / (statisticsSettings > 1 ? 8 : 7)) ? "green" : "black"
-                    }*/
-
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
@@ -135,7 +122,6 @@ ApplicationWindow {
                             color = mainWindow.color
                         }
                     }
-
 
                     PropertyAnimation {
                         id: myAnimation
@@ -193,7 +179,7 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 5
                         Repeater {
-                            model: gameId == 1 ? 7 : 5
+                            model: gameId == 7 ? 7 : 5
                             MyBall {
                                 ballText: myArray[index] !== undefined ? myArray[index] : ""
                                 idGame: gameId
@@ -207,7 +193,7 @@ ApplicationWindow {
                         anchors.margins: 5
                         font.pointSize: 12
 
-                        color: (gameId == 1 && (summ > 200 || summ < 101)) ? "red" : (gameId == 1 && (summ > 175 || summ < 126)) ? "blue" : "black"
+                        color: (gameId == 7 && (summ > 200 || summ < 101)) ? "red" : (gameId == 7 && (summ > 175 || summ < 126)) ? "blue" : "black"
 
                         text: " " + summ
                     }
@@ -217,7 +203,6 @@ ApplicationWindow {
                             parent.ListView.view.currentIndex = index
                         }
                     }
-
                 }
             }
 
@@ -241,68 +226,6 @@ ApplicationWindow {
                 }
 
                 delegate: listResultsDelegate
-            }
-
-        }
-
-        Item {
-            id: thirdPage
-
-            // компонент=делегат для отображения в GridView с вычислениями
-            //*************************************************************
-            Component {
-                id: pairBallsDelegate
-
-                Item {
-                    width: pairBallsView.cellWidth
-                    height: pairBallsView.cellHeight
-                    MyBall {
-                        id: ball_1                      
-                        anchors.margins: 5
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter
-                        ballText: balls.split(" ")[0] !== undefined ? balls.split(" ")[0] : ""
-                        idGame: gameId
-                    }
-                    MyBall {
-                        id: ball_2
-                        anchors.margins: 5
-                        anchors.left: ball_1.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        ballText: balls.split(" ")[1] !== undefined ? balls.split(" ")[1] : ""
-                        idGame: gameId
-                    }
-                    Text {
-                        id: inRow
-                        anchors.bottom: parent.bottom
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.margins: 5
-                        font.pointSize: 10
-                        text: '<b>In a row:</b> ' + freqInRow
-                        color: freqInRow > 400 ? "red" : "black"
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            parent.GridView.view.currentIndex = index
-                        }
-                    }                   
-                }
-            }
-            //*************************************************************
-
-            MyGridView {
-                id: pairBallsView
-
-                header: MyHeader {
-                    headerText: "Pair consecutive balls"
-                }
-                delegate: pairBallsDelegate
-                model: pairBallsModel
-            }
-
-            ListModel {
-                id : pairBallsModel
             }
         }
     }
@@ -338,57 +261,48 @@ ApplicationWindow {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 5
+            enabled: false
+
+            RadioButton {
+                id: button_weel
+                width: parent.width / 3
+                text: qsTr("WEELBET")
+                onCheckedChanged: {
+                    if (checked) {
+                        gameId = 2
+                        appCore.gameChanged(gameId)
+                        modelResults.clear()
+                        oneBallsModel.clear()
+                    }
+                }
+            }
+
+            RadioButton {
+                id: button_5_of_36
+                width: parent.width / 3
+                text: qsTr("5BET")
+                onCheckedChanged: {
+                    if (checked) {
+                        gameId = 6
+                        appCore.gameChanged(gameId)
+                        modelResults.clear()
+                        oneBallsModel.clear()
+                    }
+                }
+            }
 
             RadioButton {
                 id: button_7_of_42
-                width: parent.width / 4
-                text: qsTr("7 out of 42")
-                checked: true
+                width: parent.width / 3
+                text: qsTr("7BET")
                 onCheckedChanged: {
-                    if (button_7_of_42.checked == true) {
-                        gameId = 1
-                        button_6_of_36.checked = false
+                    if (checked) {
+                        gameId = 7
+                        appCore.gameChanged(gameId)
+                        //modelResults.clear()
+                        //oneBallsModel.clear()
                     }
-                    appCore.gameChanged(gameId)
-                    modelResults.clear()
-                    oneBallsModel.clear()
-                    pairBallsModel.clear()
-                    progressGetResult.value = 0.0
                 }
-            }
-
-            RadioButton {
-                id: button_6_of_36
-                width: parent.width / 4
-                text: qsTr("5 out of 36")
-                onCheckedChanged: {
-                    if (button_6_of_36.checked == true) {
-                        gameId = 3
-                        button_7_of_42.checked = false
-                    }
-                    appCore.gameChanged(gameId)
-                    modelResults.clear()
-                    oneBallsModel.clear()
-                    pairBallsModel.clear()
-                    progressGetResult.value = 0.0
-                }
-            }
-
-            Text {
-                id: countDaysLabel
-                width: parent.width / 4
-                font.pointSize: 12
-                text: qsTr("Days of statistics: ")
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            SpinBox {
-                id: countDaysOfStats
-                width: parent.width / 4
-                value: 1
-                from: 1
-                to: 365
-
             }
         }
         //**********************************************
@@ -399,6 +313,7 @@ ApplicationWindow {
             id: progressGetResult
             height: 15
             value: 0.0
+
             anchors.top: statisticsSettings.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -415,12 +330,18 @@ ApplicationWindow {
                 height: progressGetResult.height
                 radius: 5
                 color: "#17a81a"
+                Text {
+                    id: progressText
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
             }
             onValueChanged: {
+                if (value == 0) {
+                    statisticsSettings.enabled = false
+                }
                 if (value == 1) {
-                    oneBallsModel.clear()
-                    pairBallsModel.clear()
-                    appCore.receiveFromQMLCalculate()
+                    progressText.text = "Загрузка статистики игры завершена"
+                    statisticsSettings.enabled = true
                 }
             }
         }
@@ -441,9 +362,6 @@ ApplicationWindow {
                 text: qsTr("Get statistics")
                 onClicked: {
                     sirena.stop()
-                    modelResults.clear()
-                    oneBallsModel.clear()
-                    pairBallsModel.clear()
                     number = 1
                     progressGetResult.value = 0.0
                     appCore.receiveFromQMLGetData(countDaysOfStats.value)
@@ -465,17 +383,4 @@ ApplicationWindow {
         id: sirena
         source: "qrc:///sounds/00182.mp3"
     }
-
-    /*Timer {
-        interval: 300000; running: true; repeat: true
-        onTriggered: {
-            modelResults.clear()
-            oneBallsModel.clear()
-            pairBallsModel.clear()
-            number = 1
-            progressGetResult.value = 0.0
-            appCore.receiveFromQMLGetData(countDaysOfStats.value)
-        }
-    }*/
-
 }

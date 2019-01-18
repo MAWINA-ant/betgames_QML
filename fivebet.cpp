@@ -23,6 +23,11 @@ void fivebet::parserJsonDocPage(QJsonDocument document)
     }
 }
 
+void fivebet::sendDataToQML()
+{
+
+}
+
 void fivebet::getDataFromSite()
 {
     foreach (QJsonDocument doc, documentJsonList) {

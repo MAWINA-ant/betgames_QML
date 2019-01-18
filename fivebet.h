@@ -9,6 +9,7 @@ class fivebet : public abstractGameClass
 
 public:
     explicit fivebet();
+    void sendDataToQML();
 
 private:
     QMap<int, int> notFallOut;
@@ -19,6 +20,7 @@ protected:
 
 public slots:
     void getDataFromSite();
+
 };
 
 #endif // FIVEBET_H

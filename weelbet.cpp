@@ -20,6 +20,11 @@ void weelbet::parserJsonDocPage(QJsonDocument document)
     }
 }
 
+void weelbet::sendDataToQML()
+{
+
+}
+
 void weelbet::getDataFromSite()
 {
     foreach (QJsonDocument doc, documentJsonList) {

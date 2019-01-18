@@ -22,6 +22,18 @@ void sevenbet::parserJsonDocPage(QJsonDocument document)
     }
 }
 
+void sevenbet::sendDataToQML()
+{
+    for (int i = 0; i < drawListQML.size(); i ++) {
+        emit sendDrawData(drawListQML.at(i).first, drawListQML.at(i).second);
+    }
+    QMapIterator<int, int> it(notFallOut);
+    while (it.hasNext()) {
+        it.next();
+        emit sendResultToQML(it.key(), it.value());
+    }
+}
+
 void sevenbet::getDataFromSite()
 {
     qDebug() << documentJsonList.size();
@@ -31,19 +43,17 @@ void sevenbet::getDataFromSite()
     for (int i = 0; i < drawList.size(); i++) {
         int sum = 0;
         QString draw = "";
-        foreach (QString str, drawList.at(i)) {
-            int number = str.toInt();
+        foreach (QString strNumber, drawList.at(i)) {
+            int number = strNumber.toInt();
             sum += number;
             if (!notFallOut.contains(number))
                 notFallOut.insert(number, i);
-            draw.append(str + " ");
+            draw.append(strNumber + " ");
         }
-        emit sendDrawData(draw, sum);
-    }
-    QMapIterator<int, int> it(notFallOut);
-    while (it.hasNext()) {
-        it.next();
-        emit sendResultToQML(it.key(), it.value());
+        QPair<QString, int> pair;
+        pair.first = draw;
+        pair.second = sum;
+        drawListQML.append(pair);
     }
 }
 
