@@ -15,7 +15,7 @@ ApplicationWindow {
 
     // номер розыгрыша
     property int number: 1
-    property int gameId: 7     // тип игры
+    property int gameId     // тип игры
 
     /* С помощью объекта Connections
          * Устанавливаем соединение с классом ядра приложения
@@ -269,10 +269,11 @@ ApplicationWindow {
                 text: qsTr("WEELBET")
                 onCheckedChanged: {
                     if (checked) {
-                        gameId = 2
-                        appCore.gameChanged(gameId)
                         modelResults.clear()
                         oneBallsModel.clear()
+                        number = 1
+                        gameId = 2
+                        appCore.gameChanged(gameId)
                     }
                 }
             }
@@ -283,10 +284,11 @@ ApplicationWindow {
                 text: qsTr("5BET")
                 onCheckedChanged: {
                     if (checked) {
-                        gameId = 6
-                        appCore.gameChanged(gameId)
                         modelResults.clear()
                         oneBallsModel.clear()
+                        number = 1
+                        gameId = 6
+                        appCore.gameChanged(gameId)
                     }
                 }
             }
@@ -297,10 +299,11 @@ ApplicationWindow {
                 text: qsTr("7BET")
                 onCheckedChanged: {
                     if (checked) {
+                        modelResults.clear()
+                        oneBallsModel.clear()
+                        number = 1
                         gameId = 7
-                        appCore.gameChanged(gameId)
-                        //modelResults.clear()
-                        //oneBallsModel.clear()
+                        appCore.gameChanged(gameId)                       
                     }
                 }
             }
@@ -338,6 +341,7 @@ ApplicationWindow {
             onValueChanged: {
                 if (value == 0) {
                     statisticsSettings.enabled = false
+                    progressText.text = ""
                 }
                 if (value == 1) {
                     progressText.text = "Загрузка статистики игры завершена"
@@ -383,4 +387,15 @@ ApplicationWindow {
         id: sirena
         source: "qrc:///sounds/00182.mp3"
     }
+
+    // обновить отображение
+    Timer {
+            interval: 60000; running: true; repeat: true
+            onTriggered: {
+                modelResults.clear()
+                oneBallsModel.clear()
+                number = 1
+                appCore.gameChanged(gameId)
+            }
+        }
 }

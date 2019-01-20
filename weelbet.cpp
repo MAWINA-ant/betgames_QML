@@ -2,8 +2,6 @@
 
 weelbet::weelbet() : abstractGameClass (2, 180)
 {
-    siteAddress = siteAddress.arg(QString::number(dateSeconds)).arg(QString::number(gameId)).arg(QString::number(currentPage));
-    manager->get(QNetworkRequest(QUrl(siteAddress)));
     connect(this, SIGNAL(startGettingData()), this, SLOT(getDataFromSite()));
 }
 

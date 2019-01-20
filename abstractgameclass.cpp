@@ -15,13 +15,25 @@ abstractGameClass::abstractGameClass(quint8 id, quint16 intervalSec, QObject *pa
     dateSeconds = dateTime.toSecsSinceEpoch();
     manager = new QNetworkAccessManager();
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-
+    manager->get(QNetworkRequest(QUrl(siteAddress)));
+    minuteTimer = new QTimer(this);
+    connect(minuteTimer, SIGNAL(timeout()), this, SLOT(loadData()));
+    minuteTimer->start(60000);
     //********************************************************************************
 }
 
 abstractGameClass::~abstractGameClass()
 {
 
+}
+
+void abstractGameClass::loadData()
+{
+    int timeMinute = QTime::currentTime().minute();
+    if (timeMinute % 3 == 1 && gameId == 6)
+        manager->get(QNetworkRequest(QUrl(siteAddress)));
+    else if (timeMinute % 3 == 2 && gameId == 7)
+        manager->get(QNetworkRequest(QUrl(siteAddress)));
 }
 
 void abstractGameClass::replyFinished(QNetworkReply *reply)

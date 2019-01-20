@@ -25,7 +25,7 @@ public:
 
 private:
     quint16 gameIntervalSec; // интервал между розыгрышами в секундах
-    QTimer gameTimer; // таймер для обновления данных после каждого розыгрыша
+    QTimer *minuteTimer; // таймер для проверки текущей минуты
     QByteArray gameData; // данные с сайта
     quint8 pageCount = 0; // кол-во страниц статистики
 
@@ -45,6 +45,7 @@ signals:
 
 public slots:
     virtual void getDataFromSite() = 0;
+    void loadData();
 
     void replyFinished(QNetworkReply*);
 };

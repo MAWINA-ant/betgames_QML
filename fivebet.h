@@ -14,9 +14,14 @@ public:
 private:
     QMap<int, int> notFallOut;
     QList<QList<QString>> drawList;
+    QList<QPair<QString, int>> drawListQML;
 
 protected:
     void parserJsonDocPage(QJsonDocument document);
+
+signals:
+    void sendDrawData(QString, int);
+    void sendResultToQML(int numberBall, int freqRow);
 
 public slots:
     void getDataFromSite();

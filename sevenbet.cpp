@@ -2,7 +2,6 @@
 
 sevenbet::sevenbet() : abstractGameClass(7, 180)
 {
-    manager->get(QNetworkRequest(QUrl(siteAddress)));
     connect(this, SIGNAL(startGettingData()), this, SLOT(getDataFromSite()));
 }
 
@@ -36,7 +35,9 @@ void sevenbet::sendDataToQML()
 
 void sevenbet::getDataFromSite()
 {
-    qDebug() << documentJsonList.size();
+    drawList.clear();
+    drawListQML.clear();
+    notFallOut.clear();
     foreach (QJsonDocument doc, documentJsonList) {
         parserJsonDocPage(doc);
     }
