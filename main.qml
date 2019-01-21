@@ -179,9 +179,10 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 5
                         Repeater {
-                            model: gameId == 7 ? 7 : 5
+                            model: gameId == 7 ? 7 : gameId == 6 ? 5 : 1
                             MyBall {
-                                ballText: myArray[index] !== undefined ? myArray[index] : ""
+                                ballColor: gameId == 2 ? myArray[1] : ""
+                                ballText: gameId == 2 ? myArray[0] : myArray[index] !== undefined ? myArray[index] : ""
                                 idGame: gameId
                             }
                         }
@@ -195,7 +196,7 @@ ApplicationWindow {
 
                         color: (gameId == 7 && (summ > 200 || summ < 101)) ? "red" : (gameId == 7 && (summ > 175 || summ < 126)) ? "blue" : "black"
 
-                        text: " " + summ
+                        text: " " + (gameId == 2 ? "" : summ)
                     }
                     MouseArea {
                         anchors.fill: parent
@@ -390,7 +391,7 @@ ApplicationWindow {
 
     // обновить отображение
     Timer {
-            interval: 60000; running: true; repeat: true
+            interval: 30000; running: true; repeat: true
             onTriggered: {
                 modelResults.clear()
                 oneBallsModel.clear()

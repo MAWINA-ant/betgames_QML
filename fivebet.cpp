@@ -12,6 +12,8 @@ void fivebet::parserJsonDocPage(QJsonDocument document)
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject obj = value.toObject();
         QJsonArray arrayResult = obj["result"].toArray();
+        if (arrayResult.size() < 5)
+            continue;
         QList<QString> draw;
         foreach (const QJsonValue & val, arrayResult) {
             QJsonObject object = val.toObject();

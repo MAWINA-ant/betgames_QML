@@ -13,10 +13,16 @@ public:
     void sendDataToQML();
 
 private:
+    QMap<int, int> notFallOut;
     QList<QPair<QString, QString>> drawList; // список розыгрышей с номером и цветом
+    QList<QPair<QString, int>> drawListQML;
 
 protected:
     void parserJsonDocPage(QJsonDocument);
+
+signals:
+    void sendDrawData(QString, int);
+    void sendResultToQML(int, int);
 
 public slots:
     void getDataFromSite();

@@ -13,6 +13,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QQueue>
 
 class abstractGameClass : public QObject
 {
@@ -36,12 +37,13 @@ protected:
     int currentPage = 1;
     QNetworkAccessManager *manager;
     QList<QJsonDocument> documentJsonList;
+    QQueue<QString> listURL;
 
     virtual void parserJsonDocPage(QJsonDocument) = 0;
 
 signals:
     void startGettingData();
-    void sendProgressStatus(double progressStatus, QString progressGameType);
+    void sendProgressStatus(double, QString);
 
 public slots:
     virtual void getDataFromSite() = 0;

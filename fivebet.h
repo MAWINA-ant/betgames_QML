@@ -13,7 +13,7 @@ public:
 
 private:
     QMap<int, int> notFallOut;
-    QList<QList<QString>> drawList;
+    QList<QStringList> drawList;
     QList<QPair<QString, int>> drawListQML;
 
 protected:
@@ -21,7 +21,7 @@ protected:
 
 signals:
     void sendDrawData(QString, int);
-    void sendResultToQML(int numberBall, int freqRow);
+    void sendResultToQML(int, int);
 
 public slots:
     void getDataFromSite();

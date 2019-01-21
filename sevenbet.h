@@ -23,7 +23,7 @@ protected:
 
 signals:
     void sendDrawData(QString, int);
-    void sendResultToQML(int numberBall, int freqRow);
+    void sendResultToQML(int, int);
 
 public slots:
     void getDataFromSite();

@@ -12,7 +12,11 @@ appcore::appcore(QObject *parent) : QObject(parent)
     connect(sevenBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
     connect(sevenBetGame, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
     connect(sevenBetGame, SIGNAL(sendProgressStatus(double, QString)), this, SIGNAL(sendProgressStatus(double, QString)));
-    //weelbet *weelBetGame = new weelbet();
+
+    weelBetGame = new weelbet();
+    connect(weelBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
+    connect(weelBetGame, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
+    connect(weelBetGame, SIGNAL(sendProgressStatus(double, QString)), this, SIGNAL(sendProgressStatus(double, QString)));
 }
 
 bool appcore::isValidRow(QString str)
@@ -36,4 +40,7 @@ void appcore::gameChanged(int id)
         sevenBetGame->sendDataToQML();
     else if (id == 6)
         fiveBetGame->sendDataToQML();
+    else if (id == 2)
+        weelBetGame->sendDataToQML();
+
 }
