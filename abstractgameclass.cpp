@@ -34,6 +34,8 @@ void abstractGameClass::loadData()
         manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
     else if (timeMinute % 3 == 2 && gameId == 7)
         manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
+    else if (timeMinute % 3 == 0 && gameId == 2)
+        manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
 }
 
 void abstractGameClass::replyFinished(QNetworkReply *reply)
@@ -61,7 +63,7 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
                 listURL.enqueue(siteAddress.arg(QString::number(dateSeconds - 86400),(QString::number(gameId)),(QString::number(i))));
             }
         } else {
-            for (int i = 1; i < 6; i++) {
+            for (int i = 1; i < (gameId == 2 ? pageCount : 6); i++) {
                 listURL.enqueue(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(i))));
             }
         }

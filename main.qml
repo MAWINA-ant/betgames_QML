@@ -76,7 +76,9 @@ ApplicationWindow {
 
 
                     Component.onCompleted:
-                        if (freqInRow > 39) {
+                        if ((freqInRow > 41 && gameId == 7) ||
+                            (freqInRow > 43 && gameId == 6) ||
+                            (freqInRow > 100 && gameId == 2)) {
                             myAnimation.start()
                             sirena.play()
                             myFrame.border.color = "black"
@@ -98,7 +100,9 @@ ApplicationWindow {
                         anchors.margins: 5
                         font.pointSize: 10
                         text: '<b>In a row:</b> ' + freqInRow
-                        color: freqInRow > 35 ? "red" : "black"
+                        color: (freqInRow > 41 && gameId == 7) ? "red" :
+                               (freqInRow > 43 && gameId == 6) ? "red" :
+                               (freqInRow > 100 && gameId == 2) ? "red" : "black"
                     }
 
                     MouseArea {

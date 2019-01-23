@@ -28,8 +28,7 @@ Rectangle {
                 ballColor = "blue"
             else
                 ballColor = "black"
-        }
-        else if (idGame == 6) {
+        } else if (idGame == 6) {
             if (ballText >= 1 && ballText <= 9)
                 ballColor = "yellow"
             else if (ballText >= 10 && ballText <= 18)
@@ -38,6 +37,8 @@ Rectangle {
                 ballColor = "red"
             else if (ballText >= 28 && ballText <= 36)
                 ballColor = "blue"
+        } else if (idGame == 2) {
+
         }
     }
 }

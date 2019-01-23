@@ -3,6 +3,9 @@
 
 appcore::appcore(QObject *parent) : QObject(parent)
 {
+
+    qDebug() << QSslSocket::supportsSsl();
+
     fiveBetGame = new fivebet();
     connect(fiveBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
     connect(fiveBetGame, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
@@ -42,5 +45,4 @@ void appcore::gameChanged(int id)
         fiveBetGame->sendDataToQML();
     else if (id == 2)
         weelBetGame->sendDataToQML();
-
 }
