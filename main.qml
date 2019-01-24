@@ -80,7 +80,8 @@ ApplicationWindow {
                             (freqInRow > 43 && gameId == 6) ||
                             (freqInRow > 100 && gameId == 2)) {
                             myAnimation.start()
-                            sirena.play()
+                            if (soundSwitch.checked)
+                                sirena.play()
                             myFrame.border.color = "black"
                         }
 
@@ -270,7 +271,7 @@ ApplicationWindow {
 
             RadioButton {
                 id: button_weel
-                width: parent.width / 3
+                width: parent.width / 4
                 text: qsTr("WEELBET")
                 onCheckedChanged: {
                     if (checked) {
@@ -285,7 +286,7 @@ ApplicationWindow {
 
             RadioButton {
                 id: button_5_of_36
-                width: parent.width / 3
+                width: parent.width / 4
                 text: qsTr("5BET")
                 onCheckedChanged: {
                     if (checked) {
@@ -300,7 +301,7 @@ ApplicationWindow {
 
             RadioButton {
                 id: button_7_of_42
-                width: parent.width / 3
+                width: parent.width / 4
                 text: qsTr("7BET")
                 onCheckedChanged: {
                     if (checked) {
@@ -311,6 +312,12 @@ ApplicationWindow {
                         appCore.gameChanged(gameId)                       
                     }
                 }
+            }
+
+            CheckBox {
+                id: soundSwitch
+                width: parent.width / 4
+                text: qsTr("Звуковое оповещение")
             }
         }
         //**********************************************
