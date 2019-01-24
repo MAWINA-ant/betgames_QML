@@ -55,15 +55,15 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
         QJsonObject objectJson = documentJson.object().value(QString("results")).toObject();
         QJsonValue value = objectJson.value(QString("pageCount"));
         pageCount = quint8(value.toInt()); // узнаем кол-во страниц на сегодня
-        if (pageCount < 4) {
-            for (int i = 1; i < pageCount; i++) {
+        if (pageCount < 10) {
+            for (int i = 1; i <= pageCount; i++) {
                 listURL.enqueue(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(i))));
             }
-            for (int i = 1; i < (5 - pageCount); i++) {
+            for (int i = 1; i <= (10 - pageCount); i++) {
                 listURL.enqueue(siteAddress.arg(QString::number(dateSeconds - 86400),(QString::number(gameId)),(QString::number(i))));
             }
         } else {
-            for (int i = 1; i < (gameId == 2 ? pageCount : 6); i++) {
+            for (int i = 1; i <= 10; i++) {
                 listURL.enqueue(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(i))));
             }
         }
@@ -74,7 +74,7 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
     } else {
         if (!documentJsonList.contains(documentJson)) {
             documentJsonList.append(documentJson);
-            emit sendProgressStatus(currentPage * 1.0 / 5, (gameId == 6 ? "5 из 36" : gameId == 2 ? "Колесо" : "7 из 42"));
+            emit sendProgressStatus(currentPage * 1.0 / 10, (gameId == 6 ? "5 из 36" : gameId == 2 ? "Колесо" : "7 из 42"));
         }
         if (listURL.isEmpty()) {
             pageCount = 0;
