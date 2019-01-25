@@ -38,8 +38,8 @@ ApplicationWindow {
 
         // прогресс получения статистики
         onSendProgressStatus: {
-            progressGetResult.value = progressStatus
-            //progressText.text = progressGameType
+            progressText.text = progressGameType
+            progressGetResult.value = progressStatus          
         }
     }
 
@@ -338,6 +338,10 @@ ApplicationWindow {
                 color: "#e6e6e6"
                 radius: 5
             }
+            Text {
+                id: progressText
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
             contentItem: Rectangle {
                 anchors.left: progressGetResult.left
                 anchors.verticalCenter: progressGetResult.verticalCenter
@@ -345,10 +349,7 @@ ApplicationWindow {
                 height: progressGetResult.height
                 radius: 5
                 color: "#17a81a"
-                Text {
-                    id: progressText
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
+
             }
             onValueChanged: {
                 if (value == 0) {

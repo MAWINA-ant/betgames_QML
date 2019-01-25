@@ -30,11 +30,11 @@ abstractGameClass::~abstractGameClass()
 void abstractGameClass::loadData()
 {
     int timeMinute = QTime::currentTime().minute();
-    if (timeMinute % 3 == 1 && gameId == 6)
+    if (timeMinute % 3 == 2 && gameId == 6)
         manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
-    else if (timeMinute % 3 == 2 && gameId == 7)
+    else if (timeMinute % 3 == 0 && gameId == 7)
         manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
-    else if (timeMinute % 3 == 0 && gameId == 2)
+    else if (timeMinute % 3 == 1 && gameId == 2)
         manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
 }
 
@@ -50,7 +50,7 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
     //************************************************
     gameData = reply->readAll();
     QJsonDocument documentJson = QJsonDocument::fromJson(gameData);
-    if (pageCount == 0){
+    if (pageCount == 0) {
         documentJsonList.clear();
         QJsonObject objectJson = documentJson.object().value(QString("results")).toObject();
         QJsonValue value = objectJson.value(QString("pageCount"));
@@ -69,12 +69,11 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
         }
         if (!listURL.empty()) {
             manager->get(QNetworkRequest(QUrl(listURL.dequeue())));
-            currentPage++;
         }
     } else {
         if (!documentJsonList.contains(documentJson)) {
             documentJsonList.append(documentJson);
-            emit sendProgressStatus(currentPage * 1.0 / 10, (gameId == 6 ? "5 из 36" : gameId == 2 ? "Колесо" : "7 из 42"));
+            emit sendProgressStatus(currentPage * 1.0 / 10, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : (gameId == 6 ? "5BET" : "7BET")));
         }
         if (listURL.isEmpty()) {
             pageCount = 0;
