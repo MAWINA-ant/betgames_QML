@@ -11,9 +11,9 @@ void fivebet::parserJsonDocPage(QJsonDocument document)
     QJsonArray jsonArray = jsonObject["games"].toArray();
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject obj = value.toObject();
-        QJsonArray arrayResult = obj["result"].toArray();
-        if (arrayResult.size() < 5)
+        if (obj["status"] == 5)
             continue;
+        QJsonArray arrayResult = obj["result"].toArray();       
         QList<QString> draw;
         foreach (const QJsonValue & val, arrayResult) {
             QJsonObject object = val.toObject();
@@ -49,8 +49,11 @@ void fivebet::getDataFromSite()
         foreach (QString strNumber, drawList.at(i)) {
             int number = strNumber.toInt();
             sum += number;
-            if (!notFallOut.contains(number))
+            if (!notFallOut.contains(number)) {
                 notFallOut.insert(number, i);
+                if (i > 43)
+                    emit signalToStartBetting(gameId);
+            }
             draw.append(strNumber + " ");
         }
         QPair<QString, int> pair;

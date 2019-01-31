@@ -6,5 +6,6 @@
         <file>MyGridView.qml</file>
         <file>MyButton.qml</file>
         <file>sounds/00182.mp3</file>
+        <file>MyRadioButton.qml</file>
     </qresource>
 </RCC>

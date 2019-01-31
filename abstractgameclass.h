@@ -44,6 +44,7 @@ protected:
 signals:
     void startGettingData();
     void sendProgressStatus(double, QString);
+    void signalToStartBetting(int);
 
 public slots:
     virtual void getDataFromSite() = 0;

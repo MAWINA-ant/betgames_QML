@@ -31,9 +31,12 @@ signals:
     void sendDataToQML(QString drawing, int summOfBalls);
     void sendResultToQML(int numberBall, int freqRow);
     void sendProgressStatus(double progressStatus, QString progressGameType);
+    void signalToStartBettingQML(int gameType);
 
 public slots:
     void gameChanged(int id);
+
+    void replyFinished(QNetworkReply*);
 
 };
 

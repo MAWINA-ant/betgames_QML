@@ -41,6 +41,19 @@ ApplicationWindow {
             progressText.text = progressGameType
             progressGetResult.value = progressStatus          
         }
+
+        onSignalToStartBettingQML: {
+            if (gameType == 2 && !button_weel.checked) {
+                button_weel.myAnimation.start()
+                sirena.play()
+            } else if (gameType == 6 && !button_5_of_36.checked) {
+                button_5_of_36.myAnimation.start()
+                sirena.play()
+            } else if (gameType == 7 && !button_7_of_42.checked) {
+                button_7_of_42.myAnimation.start()
+                sirena.play()
+            }
+        }
     }
 
     SwipeView {
@@ -269,7 +282,7 @@ ApplicationWindow {
             anchors.margins: 5
             enabled: false
 
-            RadioButton {
+            MyRadioButton {
                 id: button_weel
                 width: parent.width / 4
                 text: qsTr("WEELBET")
@@ -280,11 +293,12 @@ ApplicationWindow {
                         number = 1
                         gameId = 2
                         appCore.gameChanged(gameId)
+                        myAnimation.stop()
                     }
                 }
             }
 
-            RadioButton {
+            MyRadioButton {
                 id: button_5_of_36
                 width: parent.width / 4
                 text: qsTr("5BET")
@@ -295,11 +309,12 @@ ApplicationWindow {
                         number = 1
                         gameId = 6
                         appCore.gameChanged(gameId)
+                        myAnimation.stop()
                     }
                 }
             }
 
-            RadioButton {
+            MyRadioButton {
                 id: button_7_of_42
                 width: parent.width / 4
                 text: qsTr("7BET")
@@ -309,7 +324,8 @@ ApplicationWindow {
                         oneBallsModel.clear()
                         number = 1
                         gameId = 7
-                        appCore.gameChanged(gameId)                       
+                        appCore.gameChanged(gameId)
+                        myAnimation.stop()
                     }
                 }
             }

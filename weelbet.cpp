@@ -12,6 +12,8 @@ void weelbet::parserJsonDocPage(QJsonDocument document)
     foreach (const QJsonValue & value, jsonArray) {
         QPair<QString, QString> draw;
         QJsonObject obj = value.toObject();
+        if (obj["status"] == 5)
+            continue;
         draw.first = obj["result"].toObject()["number"].toString();
         draw.second = obj["result"].toObject()["color"].toString();
         drawList.append(draw);
@@ -41,8 +43,11 @@ void weelbet::getDataFromSite()
     for (int i = 0; i < drawList.size(); i++) {
         QString draw = drawList.at(i).first + " " + drawList.at(i).second;
 
-        if (!notFallOut.contains(drawList.at(i).first.toInt()))
+        if (!notFallOut.contains(drawList.at(i).first.toInt())) {
             notFallOut.insert(drawList.at(i).first.toInt(), i);
+            if (i > 200)
+                emit signalToStartBetting(gameId);
+        }
         QPair<QString, int> pair;
         pair.first = draw;
         pair.second = 0;
