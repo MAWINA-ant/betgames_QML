@@ -10,7 +10,6 @@ abstractGameClass::abstractGameClass(quint8 id, quint16 intervalSec, QObject *pa
     //********************************************************************************
 
     QDateTime dateTime = QDateTime::currentDateTime();
-    qDebug() << dateTime;
     dateTime.setTime(QTime(0,0,0));
     dateSeconds = dateTime.toSecsSinceEpoch();
     manager = new QNetworkAccessManager();
@@ -30,6 +29,9 @@ abstractGameClass::~abstractGameClass()
 void abstractGameClass::loadData()
 {
     int timeMinute = QTime::currentTime().minute();
+    QDateTime dateTime = QDateTime::currentDateTime();
+    dateTime.setTime(QTime(0,0,0));
+    dateSeconds = dateTime.toSecsSinceEpoch();
     if (timeMinute % 3 == 2 && gameId == 6)
         manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
     else if (timeMinute % 3 == 0 && gameId == 7)

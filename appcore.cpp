@@ -1,5 +1,7 @@
 #include "appcore.h"
 #include <QMessageBox>
+//#include <QUrlQuery>
+//#include <QUrl>
 
 appcore::appcore(QObject *parent) : QObject(parent)
 {
@@ -37,8 +39,10 @@ appcore::appcore(QObject *parent) : QObject(parent)
     array.append("Content-Disposition: form-data; uLogin=").append("Content-Disposition: form-data; uPassword=");
     QNetworkRequest request;
     request.setUrl(uploadurl);
-    manager->post(request, array);
-
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded;charset=UTF-8");
+    QNetworkReply* reply = manager->post(request, array);
+    qDebug() << reply->error();
+    qDebug() << reply->errorString();
 }
 
 bool appcore::isValidRow(QString str)
