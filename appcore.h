@@ -11,6 +11,7 @@
 #include "fivebet.h"
 #include "sevenbet.h"
 #include "weelbet.h"
+#include "kenobet.h"
 
 class appcore : public QObject
 {
@@ -24,6 +25,7 @@ private:
     weelbet *weelBetGame;
     fivebet *fiveBetGame;
     sevenbet *sevenBetGame;
+    kenobet *kenoBetGame;
 
     bool isValidRow(QString str);
 

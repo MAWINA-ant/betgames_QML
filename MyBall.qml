@@ -37,8 +37,8 @@ Rectangle {
                 ballColor = "red"
             else if (ballText >= 28 && ballText <= 36)
                 ballColor = "blue"
-        } else if (idGame == 2) {
-
+        } else if (idGame == 9) {
+            ballColor = "red"
         }
     }
 }

@@ -45,14 +45,13 @@ ApplicationWindow {
         onSignalToStartBettingQML: {
             if (gameType == 2 && !button_weel.checked) {
                 button_weel.myAnimation.start()
-                sirena.play()
             } else if (gameType == 6 && !button_5_of_36.checked) {
                 button_5_of_36.myAnimation.start()
-                sirena.play()
             } else if (gameType == 7 && !button_7_of_42.checked) {
                 button_7_of_42.myAnimation.start()
-                sirena.play()
             }
+            if (soundSwitch.checked)
+                sirena.play()
         }
     }
 
@@ -91,7 +90,8 @@ ApplicationWindow {
                     Component.onCompleted:
                         if ((freqInRow > 41 && gameId == 7) ||
                             (freqInRow > 43 && gameId == 6) ||
-                            (freqInRow > 100 && gameId == 2)) {
+                            (freqInRow > 10 && gameId == 9) ||
+                            (freqInRow > 119 && gameId == 2)) {
                             myAnimation.start()
                             if (soundSwitch.checked)
                                 sirena.play()
@@ -116,7 +116,8 @@ ApplicationWindow {
                         text: '<b>In a row:</b> ' + freqInRow
                         color: (freqInRow > 41 && gameId == 7) ? "red" :
                                (freqInRow > 43 && gameId == 6) ? "red" :
-                               (freqInRow > 100 && gameId == 2) ? "red" : "black"
+                               (freqInRow > 10 && gameId == 9) ? "red" :
+                               (freqInRow > 119 && gameId == 2) ? "red" : "black"
                     }
 
                     MouseArea {
@@ -197,7 +198,7 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 5
                         Repeater {
-                            model: gameId == 7 ? 7 : gameId == 6 ? 5 : 1
+                            model: gameId == 7 ? 7 : gameId == 6 ? 5 : gameId == 9 ? 20 : 1
                             MyBall {
                                 ballColor: gameId == 2 ? myArray[1] : ""
                                 ballText: gameId == 2 ? myArray[0] : myArray[index] !== undefined ? myArray[index] : ""
@@ -284,7 +285,7 @@ ApplicationWindow {
 
             MyRadioButton {
                 id: button_weel
-                width: parent.width / 4
+                width: parent.width / 5
                 text: qsTr("WEELBET")
                 onCheckedChanged: {
                     if (checked) {
@@ -300,7 +301,7 @@ ApplicationWindow {
 
             MyRadioButton {
                 id: button_5_of_36
-                width: parent.width / 4
+                width: parent.width / 5
                 text: qsTr("5BET")
                 onCheckedChanged: {
                     if (checked) {
@@ -316,7 +317,7 @@ ApplicationWindow {
 
             MyRadioButton {
                 id: button_7_of_42
-                width: parent.width / 4
+                width: parent.width / 5
                 text: qsTr("7BET")
                 onCheckedChanged: {
                     if (checked) {
@@ -330,12 +331,30 @@ ApplicationWindow {
                 }
             }
 
+            MyRadioButton {
+                id: button_keno
+                width: parent.width / 5
+                text: qsTr("KENO")
+                onCheckedChanged: {
+                    if (checked) {
+                        modelResults.clear()
+                        oneBallsModel.clear()
+                        number = 1
+                        gameId = 9
+                        appCore.gameChanged(gameId)
+                        myAnimation.stop()
+                    }
+                }
+            }
+
             CheckBox {
                 id: soundSwitch
-                width: parent.width / 4
-                text: qsTr("Звуковое оповещение")
+                width: parent.width / 5
+                text: qsTr("Звук")
             }
         }
+
+
         //**********************************************
 
         // показывает процесс загрузки страниц с сайта

@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     abstractgameclass.cpp \
     fivebet.cpp \
     sevenbet.cpp \
-    weelbet.cpp
+    weelbet.cpp \
+    kenobet.cpp
 
 RESOURCES += qml.qrc
 
@@ -26,7 +27,8 @@ HEADERS += \
     abstractgameclass.h \
     fivebet.h \
     sevenbet.h \
-    weelbet.h
+    weelbet.h \
+    kenobet.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -1,29 +1,11 @@
-#include "sevenbet.h"
+#include "kenobet.h"
 
-sevenbet::sevenbet() : abstractGameClass(7, 180)
+kenobet::kenobet() : abstractGameClass(9, 300)
 {
     connect(this, SIGNAL(startGettingData()), this, SLOT(getDataFromSite()));
 }
 
-void sevenbet::parserJsonDocPage(QJsonDocument document)
-{
-    QJsonObject jsonObject = document.object().value("results").toObject();
-    QJsonArray jsonArray = jsonObject["games"].toArray();
-    foreach (const QJsonValue & value, jsonArray) {
-        QJsonObject obj = value.toObject();
-        if (obj["status"] == 5)
-            continue;
-        QJsonArray arrayResult = obj["result"].toArray();
-        QList<QString> draw;
-        foreach (const QJsonValue & val, arrayResult) {
-            QJsonObject object = val.toObject();
-            draw.append(object["number"].toString());
-        }
-        drawList.append(draw);
-    }
-}
-
-void sevenbet::sendDataToQML()
+void kenobet::sendDataToQML()
 {
     for (int i = 0; i < drawListQML.size(); i ++) {
         emit sendDrawData(drawListQML.at(i).first, drawListQML.at(i).second);
@@ -35,7 +17,24 @@ void sevenbet::sendDataToQML()
     }
 }
 
-void sevenbet::getDataFromSite()
+void kenobet::parserJsonDocPage(QJsonDocument document)
+{
+    QJsonObject jsonObject = document.object().value("results").toObject();
+    QJsonArray jsonArray = jsonObject["games"].toArray();
+    foreach (const QJsonValue & value, jsonArray) {
+        QJsonObject obj = value.toObject();
+        if (obj["status"] == 5)
+            continue;
+        QJsonArray arrayResult = obj["result"].toArray();
+        QList<QString> draw;
+        foreach (const QJsonValue & val, arrayResult) {
+            draw.append(val.toString());
+        }
+        drawList.append(draw);
+    }
+}
+
+void kenobet::getDataFromSite()
 {
     drawList.clear();
     drawListQML.clear();
@@ -62,5 +61,3 @@ void sevenbet::getDataFromSite()
         drawListQML.append(pair);
     }
 }
-
-

@@ -5,12 +5,10 @@
 
 appcore::appcore(QObject *parent) : QObject(parent)
 {
-
-    qDebug() << QSslSocket::supportsSsl();
-
     fiveBetGame = new fivebet();
     sevenBetGame = new sevenbet();
     weelBetGame = new weelbet();
+    kenoBetGame = new kenobet();
 
     connect(fiveBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
     connect(fiveBetGame, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
@@ -27,22 +25,10 @@ appcore::appcore(QObject *parent) : QObject(parent)
     connect(weelBetGame, SIGNAL(sendProgressStatus(double, QString)), this, SIGNAL(sendProgressStatus(double, QString)));
     connect(weelBetGame, SIGNAL(signalToStartBetting(int)), this, SIGNAL(signalToStartBettingQML(int)));
 
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-    QUrl uploadurl("https://1xppbd.host/ru/user/auth/");
-    //uploadurl.setUserName("");
-    //uploadurl.setPassword("");
-           /* uploadurl.setUserName("");           //Разумеется рабочий логин
-            uploadurl.setPassword("");    //Разумеется рабочий пароль*/
-    QByteArray array;
-    array.append("Content-Disposition: form-data; uLogin=").append("Content-Disposition: form-data; uPassword=");
-    QNetworkRequest request;
-    request.setUrl(uploadurl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded;charset=UTF-8");
-    QNetworkReply* reply = manager->post(request, array);
-    qDebug() << reply->error();
-    qDebug() << reply->errorString();
+    connect(kenoBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
+    connect(kenoBetGame, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
+    connect(kenoBetGame, SIGNAL(sendProgressStatus(double, QString)), this, SIGNAL(sendProgressStatus(double, QString)));
+    connect(kenoBetGame, SIGNAL(signalToStartBetting(int)), this, SIGNAL(signalToStartBettingQML(int)));
 }
 
 bool appcore::isValidRow(QString str)
@@ -68,6 +54,8 @@ void appcore::gameChanged(int id)
         fiveBetGame->sendDataToQML();
     else if (id == 2)
         weelBetGame->sendDataToQML();
+    else if (id == 9)
+        kenoBetGame->sendDataToQML();
 }
 
 void appcore::replyFinished(QNetworkReply *reply)

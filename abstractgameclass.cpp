@@ -38,6 +38,8 @@ void abstractGameClass::loadData()
         manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
     else if (timeMinute % 3 == 1 && gameId == 2)
         manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
+    if (timeMinute % 5 == 0 && gameId == 9)
+        manager->get(QNetworkRequest(QUrl(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(currentPage))))));
 }
 
 void abstractGameClass::replyFinished(QNetworkReply *reply)
@@ -75,7 +77,7 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
     } else {
         if (!documentJsonList.contains(documentJson)) {
             documentJsonList.append(documentJson);
-            emit sendProgressStatus(currentPage * 1.0 / 10, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : (gameId == 6 ? "5BET" : "7BET")));
+            emit sendProgressStatus(currentPage * 1.0 / 10, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : gameId == 6 ? "5BET" : gameId == 9 ? "KENO" : "7BET"));
         }
         if (listURL.isEmpty()) {
             pageCount = 0;
