@@ -47,18 +47,18 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
     // если нет соединени или нет данных или ошибка
     if (!reply->bytesAvailable() || reply->error()) {
         QMessageBox errorMessage;
-        errorMessage.setText("Problem with connection to internet");
+        errorMessage.setText("Problem with connection to internet ");
         errorMessage.exec();
         return;
     }
     //************************************************
     gameData = reply->readAll();
     QJsonDocument documentJson = QJsonDocument::fromJson(gameData);
-    if (pageCount == 0) {
+    if (pageCount == -1) {
         documentJsonList.clear();
         QJsonObject objectJson = documentJson.object().value(QString("results")).toObject();
         QJsonValue value = objectJson.value(QString("pageCount"));
-        pageCount = quint8(value.toInt()); // узнаем кол-во страниц на сегодня
+        pageCount = qint8(value.toInt()); // узнаем кол-во страниц на сегодня
         if (pageCount < 10) {
             for (int i = 1; i <= pageCount; i++) {
                 listURL.enqueue(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(i))));
@@ -73,19 +73,21 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
         }
         if (!listURL.empty()) {
             manager->get(QNetworkRequest(QUrl(listURL.dequeue())));
+            emit sendProgressStatus(currentPage * 1.0 / 10, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : gameId == 6 ? "5BET" : gameId == 9 ? "KENO" : "7BET"));
+            currentPage++;
         }
     } else {
         if (!documentJsonList.contains(documentJson)) {
             documentJsonList.append(documentJson);
-            emit sendProgressStatus(currentPage * 1.0 / 10, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : gameId == 6 ? "5BET" : gameId == 9 ? "KENO" : "7BET"));
         }
         if (listURL.isEmpty()) {
-            pageCount = 0;
+            pageCount = -1;
             currentPage = 1;
             emit startGettingData();
             return;
         } else {
             manager->get(QNetworkRequest(QUrl(listURL.dequeue())));
+            emit sendProgressStatus(currentPage * 1.0 / 10, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : gameId == 6 ? "5BET" : gameId == 9 ? "KENO" : "7BET"));
             currentPage++;
         }
     }

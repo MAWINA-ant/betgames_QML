@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     fivebet.cpp \
     sevenbet.cpp \
     weelbet.cpp \
-    kenobet.cpp
+    kenobet.cpp \
+    lottobet.cpp
 
 RESOURCES += qml.qrc
 
@@ -28,7 +29,8 @@ HEADERS += \
     fivebet.h \
     sevenbet.h \
     weelbet.h \
-    kenobet.h
+    kenobet.h \
+    lottobet.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

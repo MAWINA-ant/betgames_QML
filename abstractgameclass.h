@@ -28,7 +28,7 @@ private:
     quint16 gameIntervalSec; // интервал между розыгрышами в секундах
     QTimer *minuteTimer; // таймер для проверки текущей минуты
     QByteArray gameData; // данные с сайта
-    quint8 pageCount = 0; // кол-во страниц статистики
+    qint8 pageCount = -1; // кол-во страниц статистики
 
 protected:
     QString siteAddress = QString("https://tvbetframe6.com/tvbet/getdata?action=filterResults&date=%1&game_type=%2&my=0&page=%3&clientId=1&lng=ru"); // строка с URL для получения данных

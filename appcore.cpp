@@ -1,7 +1,5 @@
 #include "appcore.h"
 #include <QMessageBox>
-//#include <QUrlQuery>
-//#include <QUrl>
 
 appcore::appcore(QObject *parent) : QObject(parent)
 {

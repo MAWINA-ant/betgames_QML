@@ -85,8 +85,6 @@ ApplicationWindow {
                     border.width: 2
                     border.color: mainWindow.color
 
-
-
                     Component.onCompleted:
                         if ((freqInRow > 41 && gameId == 7) ||
                             (freqInRow > 43 && gameId == 6) ||
@@ -103,7 +101,7 @@ ApplicationWindow {
                         anchors.top: parent.top
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.margins: 5
-                        ballText: ball
+                        ballText: ball                       
                         idGame: gameId
                     }
 
