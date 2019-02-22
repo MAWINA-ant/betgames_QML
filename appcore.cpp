@@ -54,6 +54,13 @@ void appcore::gameChanged(int id)
         weelBetGame->sendDataToQML();
     else if (id == 9)
         kenoBetGame->sendDataToQML();
+    else if (id == 9)
+        ;
+    else if (id == 9)
+        ;
+    else if (id == 9)
+        ;
+
 }
 
 void appcore::replyFinished(QNetworkReply *reply)

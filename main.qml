@@ -260,7 +260,7 @@ ApplicationWindow {
 
     Rectangle {
         id: mainMenu
-        height: 130
+        height: 200
 
         //anchors.top: indicator.bottom
         anchors.bottom: parent.bottom
@@ -273,7 +273,7 @@ ApplicationWindow {
 
         // строка с выбором игры и кол-вом дней выборки
         //**********************************************
-        Row {
+        Grid {
             id: statisticsSettings
             anchors.top: parent.top
             anchors.left: parent.left
@@ -283,7 +283,6 @@ ApplicationWindow {
 
             MyRadioButton {
                 id: button_weel
-                width: parent.width / 5
                 text: qsTr("WEELBET")
                 onCheckedChanged: {
                     if (checked) {
@@ -299,7 +298,6 @@ ApplicationWindow {
 
             MyRadioButton {
                 id: button_5_of_36
-                width: parent.width / 5
                 text: qsTr("5BET")
                 onCheckedChanged: {
                     if (checked) {
@@ -315,7 +313,6 @@ ApplicationWindow {
 
             MyRadioButton {
                 id: button_7_of_42
-                width: parent.width / 5
                 text: qsTr("7BET")
                 onCheckedChanged: {
                     if (checked) {
@@ -331,7 +328,6 @@ ApplicationWindow {
 
             MyRadioButton {
                 id: button_keno
-                width: parent.width / 5
                 text: qsTr("KENO")
                 onCheckedChanged: {
                     if (checked) {
@@ -345,9 +341,68 @@ ApplicationWindow {
                 }
             }
 
+            MyRadioButton {
+                id: button_lotto1
+                text: qsTr("LOTTO_1")
+                onCheckedChanged: {
+                    if (checked) {
+                        modelResults.clear()
+                        oneBallsModel.clear()
+                        number = 1
+                        gameId = 21
+                        appCore.gameChanged(gameId)
+                        myAnimation.stop()
+                    }
+                }
+            }
+
+            MyRadioButton {
+                id: button_lotto2
+                text: qsTr("LOTTO_2")
+                onCheckedChanged: {
+                    if (checked) {
+                        modelResults.clear()
+                        oneBallsModel.clear()
+                        number = 1
+                        gameId = 22
+                        appCore.gameChanged(gameId)
+                        myAnimation.stop()
+                    }
+                }
+            }
+
+            MyRadioButton {
+                id: button_lotto3
+                text: qsTr("LOTTO_3")
+                onCheckedChanged: {
+                    if (checked) {
+                        modelResults.clear()
+                        oneBallsModel.clear()
+                        number = 1
+                        gameId = 23
+                        appCore.gameChanged(gameId)
+                        myAnimation.stop()
+                    }
+                }
+            }
+
+            MyRadioButton {
+                id: button_lotto4
+                text: qsTr("LOTTO_4")
+                onCheckedChanged: {
+                    if (checked) {
+                        modelResults.clear()
+                        oneBallsModel.clear()
+                        number = 1
+                        gameId = 24
+                        appCore.gameChanged(gameId)
+                        myAnimation.stop()
+                    }
+                }
+            }
+
             CheckBox {
                 id: soundSwitch
-                width: parent.width / 5
                 text: qsTr("Звук")
             }
         }

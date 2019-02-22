@@ -6,8 +6,6 @@ RadioButton {
     id: thisButton
     property PropertyAnimation myAnimation
 
-    width: parent.width / 4
-
     PropertyAnimation {
         id: myAnimation
         loops: Animation.Infinite
