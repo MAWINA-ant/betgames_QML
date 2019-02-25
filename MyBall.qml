@@ -39,6 +39,21 @@ Rectangle {
                 ballColor = "blue"
         } else if (idGame == 9) {
             ballColor = "red"
+        } else if (idGame == 21) {
+
+        } else if (idGame == 22) {
+            if (ballText % 4 == 1)
+                ballColor = "blue"
+            else if (ballText % 4 == 2)
+                ballColor = "black"
+            else if (ballText % 4 == 3)
+                ballColor = "red"
+            else if (ballText % 4 == 0)
+                ballColor = "pink"
+        } else if (idGame == 23) {
+
+        } else if (idGame == 24) {
+
         }
     }
 }

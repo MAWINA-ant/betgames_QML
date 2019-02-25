@@ -49,6 +49,14 @@ ApplicationWindow {
                 button_5_of_36.myAnimation.start()
             } else if (gameType == 7 && !button_7_of_42.checked) {
                 button_7_of_42.myAnimation.start()
+            } else if (gameType == 21 && !button_lotto3.checked) {
+                button_lotto1.myAnimation.start()
+            } else if (gameType == 22 && !button_lotto3.checked) {
+                button_lotto2.myAnimation.start()
+            } else if (gameType == 23 && !button_lotto3.checked) {
+                button_lotto3.myAnimation.start()
+            } else if (gameType == 24 && !button_lotto3.checked) {
+                button_lotto4.myAnimation.start()
             }
             if (soundSwitch.checked)
                 sirena.play()
@@ -89,7 +97,8 @@ ApplicationWindow {
                         if ((freqInRow > 41 && gameId == 7) ||
                             (freqInRow > 43 && gameId == 6) ||
                             (freqInRow > 10 && gameId == 9) ||
-                            (freqInRow > 119 && gameId == 2)) {
+                            (freqInRow > 119 && gameId == 2)||
+                            (freqInRow > 119 && gameId == 23)) {
                             myAnimation.start()
                             if (soundSwitch.checked)
                                 sirena.play()
@@ -115,7 +124,8 @@ ApplicationWindow {
                         color: (freqInRow > 41 && gameId == 7) ? "red" :
                                (freqInRow > 43 && gameId == 6) ? "red" :
                                (freqInRow > 10 && gameId == 9) ? "red" :
-                               (freqInRow > 119 && gameId == 2) ? "red" : "black"
+                               (freqInRow > 119 && gameId == 2) ? "red" :
+                               (freqInRow > 119 && gameId == 23) ? "red" : "black"
                     }
 
                     MouseArea {
@@ -196,7 +206,7 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 5
                         Repeater {
-                            model: gameId == 7 ? 7 : gameId == 6 ? 5 : gameId == 9 ? 20 : 1
+                            model: gameId == 7 ? 7 : gameId == 6 ? 5 : gameId == 9 ? 20 : gameId == 21 ? 7 : gameId == 22 ? 5 : gameId == 24 ? 5 : 1
                             MyBall {
                                 ballColor: gameId == 2 ? myArray[1] : ""
                                 ballText: gameId == 2 ? myArray[0] : myArray[index] !== undefined ? myArray[index] : ""
@@ -213,7 +223,7 @@ ApplicationWindow {
 
                         color: (gameId == 7 && (summ > 200 || summ < 101)) ? "red" : (gameId == 7 && (summ > 175 || summ < 126)) ? "blue" : "black"
 
-                        text: " " + (gameId == 2 ? "" : summ)
+                        text: " " + (gameId == 2 ? "" : gameId == 23 ? "" : summ)
                     }
                     MouseArea {
                         anchors.fill: parent
