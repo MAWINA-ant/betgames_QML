@@ -97,8 +97,7 @@ ApplicationWindow {
                         if ((freqInRow > 41 && gameId == 7) ||
                             (freqInRow > 43 && gameId == 6) ||
                             (freqInRow > 10 && gameId == 9) ||
-                            (freqInRow > 119 && gameId == 2)||
-                            (freqInRow > 119 && gameId == 23)) {
+                            (freqInRow > 119 && (gameId == 2 || gameId == 23))) {
                             myAnimation.start()
                             if (soundSwitch.checked)
                                 sirena.play()

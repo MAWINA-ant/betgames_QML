@@ -28,7 +28,7 @@ private:
     sevenbet *sevenBetGame;
     kenobet *kenoBetGame;
 
-    //lottobet *lotto_1;
+    lottobet *lotto_1;
     lottobet *lotto_2;
     lottobet *lotto_3;
     //lottobet *lotto_4;

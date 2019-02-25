@@ -25,12 +25,14 @@ void lottobet::sendDataToQML()
 
 void lottobet::replyFinished(QNetworkReply *reply)
 {
+    drawList.clear();
+    drawListQML.clear();
+    notFallOut.clear();
     // если нет соединени или нет данных или ошибка
     if (!reply->bytesAvailable() || reply->error()) {
         qDebug() << "Error!";
         return;
-    }
-
+    }    
     QByteArray gameData = reply->readAll();
     QJsonDocument documentJson = QJsonDocument::fromJson(gameData);
     QJsonObject jsonObject = documentJson.object();
@@ -42,7 +44,6 @@ void lottobet::replyFinished(QNetworkReply *reply)
             drawList.append(obj.value("Res").toString());
         } else if (version == 14) {
             drawList.append(obj.value("Res").toString());
-            //qDebug() << obj.value("Res").toString().remove(",");
         } else if (version == 17) {
             drawList.append(obj.value("Res").toString());
         } else if (version == 20) {
@@ -88,9 +89,6 @@ void lottobet::replyFinished(QNetworkReply *reply)
 
 void lottobet::loadData()
 {
-    drawList.clear();
-    drawListQML.clear();
-    notFallOut.clear();
     QUrl url(urlString.arg("GetResult"));
     QNetworkRequest request(url);
     request.setRawHeader("Content-Type", "application/json");

@@ -8,7 +8,7 @@ appcore::appcore(QObject *parent) : QObject(parent)
     weelBetGame = new weelbet();
     kenoBetGame = new kenobet();
 
-    //lotto_1 = new lottobet(1, this);
+    lotto_1 = new lottobet(1, this);
     lotto_2 = new lottobet(2, this);
     lotto_3 = new lottobet(3, this);
     //lotto_4 = new lottobet(4, this);
@@ -33,11 +33,17 @@ appcore::appcore(QObject *parent) : QObject(parent)
     connect(kenoBetGame, SIGNAL(sendProgressStatus(double, QString)), this, SIGNAL(sendProgressStatus(double, QString)));
     connect(kenoBetGame, SIGNAL(signalToStartBetting(int)), this, SIGNAL(signalToStartBettingQML(int)));
 
+    connect(lotto_1, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
+    connect(lotto_1, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
+    connect(lotto_1, SIGNAL(signalToStartBetting(int)), this, SIGNAL(signalToStartBettingQML(int)));
+
     connect(lotto_2, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
     connect(lotto_2, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
+    connect(lotto_2, SIGNAL(signalToStartBetting(int)), this, SIGNAL(signalToStartBettingQML(int)));
 
     connect(lotto_3, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
     connect(lotto_3, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
+    connect(lotto_3, SIGNAL(signalToStartBetting(int)), this, SIGNAL(signalToStartBettingQML(int)));
 }
 
 bool appcore::isValidRow(QString str)
@@ -66,7 +72,7 @@ void appcore::gameChanged(int id)
     else if (id == 9)
         kenoBetGame->sendDataToQML();
     else if (id == 21)
-        ;
+        lotto_1->sendDataToQML();
     else if (id == 22)
         lotto_2->sendDataToQML();
     else if (id == 23)

@@ -18,7 +18,7 @@ Rectangle {
         onTextChanged: {
             if (idGame != 2)
                 setColor()
-            color = (ballColor == "yellow" || ballColor == "white") ? "black" : "white"
+            color = (ballColor == "yellow" || ballColor == "white" || ballColor == "lightblue") ? "black" : "white"
         }
     }
 
@@ -40,7 +40,22 @@ Rectangle {
         } else if (idGame == 9) {
             ballColor = "red"
         } else if (idGame == 21) {
-
+            if (ballText % 8 == 1)
+                ballColor = "blue"
+            else if (ballText % 8 == 2)
+                ballColor = "black"
+            else if (ballText % 8 == 3)
+                ballColor = "red"
+            else if (ballText % 8 == 4)
+                ballColor = "lightblue"
+            else if (ballText % 8 == 5)
+                ballColor = "yellow"
+            else if (ballText % 8 == 6)
+                ballColor = "pink"
+            else if (ballText % 8 == 7)
+                ballColor = "orange"
+            else if (ballText % 8 == 0)
+                ballColor = "grey"
         } else if (idGame == 22) {
             if (ballText % 4 == 1)
                 ballColor = "blue"
@@ -51,7 +66,22 @@ Rectangle {
             else if (ballText % 4 == 0)
                 ballColor = "pink"
         } else if (idGame == 23) {
-
+            if (ballText == 0)
+                ballColor = "pink"
+            else {
+                if (ballText % 6 == 1)
+                    ballColor = "blue"
+                else if (ballText % 6 == 2)
+                    ballColor = "black"
+                else if (ballText % 6 == 3)
+                    ballColor = "red"
+                else if (ballText % 6 == 4)
+                    ballColor = "lightblue"
+                else if (ballText % 6 == 5)
+                    ballColor = "yellow"
+                else if (ballText % 6 == 0)
+                    ballColor = "grey"
+            }
         } else if (idGame == 24) {
 
         }
