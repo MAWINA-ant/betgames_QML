@@ -31,7 +31,7 @@ private:
     lottobet *lotto_1;
     lottobet *lotto_2;
     lottobet *lotto_3;
-    //lottobet *lotto_4;
+    lottobet *lotto_4;
 
     bool isValidRow(QString str);
 

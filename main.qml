@@ -100,7 +100,8 @@ ApplicationWindow {
                             (freqInRow > 119 && gameId == 2) ||
                             (freqInRow > 119 && gameId == 23)||
                             (freqInRow > 23 && gameId == 22) ||
-                            (freqInRow > 35 && gameId == 21)) {
+                            (freqInRow > 35 && gameId == 21) ||
+                            (freqInRow > 100 && gameId == 24)) {
                             myAnimation.start()
                             inRow.color = "red"
                             if (soundSwitch.checked)

@@ -11,7 +11,7 @@ appcore::appcore(QObject *parent) : QObject(parent)
     lotto_1 = new lottobet(1, this);
     lotto_2 = new lottobet(2, this);
     lotto_3 = new lottobet(3, this);
-    //lotto_4 = new lottobet(4, this);
+    lotto_4 = new lottobet(4, this);
 
     connect(fiveBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
     connect(fiveBetGame, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
@@ -44,6 +44,11 @@ appcore::appcore(QObject *parent) : QObject(parent)
     connect(lotto_3, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
     connect(lotto_3, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
     connect(lotto_3, SIGNAL(signalToStartBetting(int)), this, SIGNAL(signalToStartBettingQML(int)));
+
+    connect(lotto_4, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
+    connect(lotto_4, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
+    connect(lotto_4, SIGNAL(signalToStartBetting(int)), this, SIGNAL(signalToStartBettingQML(int)));
+
 }
 
 bool appcore::isValidRow(QString str)
@@ -78,7 +83,7 @@ void appcore::gameChanged(int id)
     else if (id == 23)
         lotto_3->sendDataToQML();
     else if (id == 24)
-        ;
+        lotto_4->sendDataToQML();;
 
 }
 

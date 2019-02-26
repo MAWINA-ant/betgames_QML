@@ -77,6 +77,8 @@ void lottobet::replyFinished(QNetworkReply *reply)
                         emit signalToStartBetting(22);}
                     else if (i > 37 && gameId == 1)
                         emit signalToStartBetting(21);
+                    else if (i > 100 && gameId == 4)
+                        emit signalToStartBetting(24);
                 }
                 draw.append(strNumber + " ");
             }

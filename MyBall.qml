@@ -42,7 +42,7 @@ Rectangle {
                 ballColor = "blue"
         } else if (idGame == 9) {
             ballColor = "red"
-        } else if (idGame == 21) {
+        } else if (idGame == 21 || idGame == 24) {
             if (ballText % 8 == 1)
                 ballColor = "blue"
             else if (ballText % 8 == 2)
