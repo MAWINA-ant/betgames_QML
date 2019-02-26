@@ -18,7 +18,10 @@ Rectangle {
         onTextChanged: {
             if (idGame != 2)
                 setColor()
-            color = (ballColor == "yellow" || ballColor == "white" || ballColor == "lightblue") ? "black" : "white"
+            color = (ballColor == "yellow" ||
+                     ballColor == "pink"   ||
+                     ballColor == "white"  ||
+                     ballColor == "lightblue") ? "black" : "white"
         }
     }
 

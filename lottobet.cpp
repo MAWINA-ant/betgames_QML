@@ -32,7 +32,7 @@ void lottobet::replyFinished(QNetworkReply *reply)
     if (!reply->bytesAvailable() || reply->error()) {
         qDebug() << "Error!";
         return;
-    }    
+    }
     QByteArray gameData = reply->readAll();
     QJsonDocument documentJson = QJsonDocument::fromJson(gameData);
     QJsonObject jsonObject = documentJson.object();
@@ -50,15 +50,14 @@ void lottobet::replyFinished(QNetworkReply *reply)
             drawList.append(obj.value("Res").toString());
         }
     }
-
-    if (gameId == 23) {
+    if (gameId == 3) {
         for (int i = 0; i < drawList.size(); i++) {
             QString draw = drawList.at(i);
 
             if (!notFallOut.contains(drawList.at(i).toInt())) {
                 notFallOut.insert(drawList.at(i).toInt(), i);
-                if (i > 200)
-                    emit signalToStartBetting(gameId);
+                if (i > 250)
+                    emit signalToStartBetting(23);
             }
             QPair<QString, int> pair;
             pair.first = draw;
@@ -74,8 +73,10 @@ void lottobet::replyFinished(QNetworkReply *reply)
                 sum += number;
                 if (!notFallOut.contains(number)) {
                     notFallOut.insert(number, i);
-                    if (i > 43)
-                        emit signalToStartBetting(gameId);
+                    if (i > 25 && gameId == 2){
+                        emit signalToStartBetting(22);}
+                    else if (i > 37 && gameId == 1)
+                        emit signalToStartBetting(21);
                 }
                 draw.append(strNumber + " ");
             }

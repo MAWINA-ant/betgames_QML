@@ -94,12 +94,15 @@ ApplicationWindow {
                     border.color: mainWindow.color
 
                     Component.onCompleted:
-                        if ((freqInRow > 41 && gameId == 7) ||
-                            (freqInRow > 43 && gameId == 6) ||
-                            (freqInRow > 10 && gameId == 9) ||
-                            (freqInRow > 119 && gameId == 2)||
-                            (freqInRow > 119 && gameId == 23)) {
+                        if ((freqInRow > 41 && gameId == 7)  ||
+                            (freqInRow > 43 && gameId == 6)  ||
+                            (freqInRow > 10 && gameId == 9)  ||
+                            (freqInRow > 119 && gameId == 2) ||
+                            (freqInRow > 119 && gameId == 23)||
+                            (freqInRow > 23 && gameId == 22) ||
+                            (freqInRow > 35 && gameId == 21)) {
                             myAnimation.start()
+                            inRow.color = "red"
                             if (soundSwitch.checked)
                                 sirena.play()
                             myFrame.border.color = "black"
@@ -121,11 +124,6 @@ ApplicationWindow {
                         anchors.margins: 5
                         font.pointSize: 10
                         text: '<b>In a row:</b> ' + freqInRow
-                        color: (freqInRow > 41 && gameId == 7) ? "red" :
-                               (freqInRow > 43 && gameId == 6) ? "red" :
-                               (freqInRow > 10 && gameId == 9) ? "red" :
-                               (freqInRow > 119 && gameId == 2) ? "red" :
-                               (freqInRow > 119 && gameId == 23) ? "red" : "black"
                     }
 
                     MouseArea {
@@ -353,7 +351,7 @@ ApplicationWindow {
 
             MyRadioButton {
                 id: button_lotto1
-                text: qsTr("LOTTO_1")
+                text: qsTr("LOTTO_7_48")
                 onCheckedChanged: {
                     if (checked) {
                         modelResults.clear()
@@ -368,7 +366,7 @@ ApplicationWindow {
 
             MyRadioButton {
                 id: button_lotto2
-                text: qsTr("LOTTO_2")
+                text: qsTr("LOTTO_5_20")
                 onCheckedChanged: {
                     if (checked) {
                         modelResults.clear()
