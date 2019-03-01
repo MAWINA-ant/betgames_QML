@@ -5,9 +5,6 @@
 
 int main(int argc, char *argv[])
 {
-
-    using namespace std;
-
     QApplication app(argc, argv);
     QQmlApplicationEngine engine;
 

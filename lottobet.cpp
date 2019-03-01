@@ -22,34 +22,10 @@ void lottobet::sendDataToQML()
     }
 }
 
-
-void lottobet::replyFinished(QNetworkReply *reply)
+void lottobet::parseData()
 {
-    drawList.clear();
     drawListQML.clear();
     notFallOut.clear();
-    // если нет соединени или нет данных или ошибка
-    if (!reply->bytesAvailable() || reply->error()) {
-        qDebug() << "Error!";
-        return;
-    }
-    QByteArray gameData = reply->readAll();
-    QJsonDocument documentJson = QJsonDocument::fromJson(gameData);
-    QJsonObject jsonObject = documentJson.object();
-    QJsonArray jsonArray = jsonObject.value("GetMagicResultResult").toArray();
-    foreach (const QJsonValue & value, jsonArray) {
-        QJsonObject obj = value.toObject();
-        int version = obj.value("GID").toInt();
-        if (version == 3) {
-            drawList.append(obj.value("Res").toString());
-        } else if (version == 14) {
-            drawList.append(obj.value("Res").toString());
-        } else if (version == 17) {
-            drawList.append(obj.value("Res").toString());
-        } else if (version == 20) {
-            drawList.append(obj.value("Res").toString());
-        }
-    }
     if (gameId == 3) {
         for (int i = 0; i < drawList.size(); i++) {
             QString draw = drawList.at(i);
@@ -90,14 +66,53 @@ void lottobet::replyFinished(QNetworkReply *reply)
     }
 }
 
+
+void lottobet::replyFinished(QNetworkReply *reply)
+{
+    // если нет соединени или нет данных или ошибка
+    if (!reply->bytesAvailable() || reply->error()) {
+        qDebug() << "Error! dostupno byte -> " << reply->bytesAvailable();
+        qDebug() << reply->error();
+        return;
+    }
+    QByteArray gameData = reply->readAll();
+    QJsonDocument documentJson = QJsonDocument::fromJson(gameData);
+    QJsonObject jsonObject = documentJson.object();
+    QJsonArray jsonArray = jsonObject.value("GetMagicResultResult").toArray();
+    foreach (const QJsonValue & value, jsonArray) {
+        QJsonObject obj = value.toObject();
+        int version = obj.value("GID").toInt();
+        if (version == 3) {
+            drawList.append(obj.value("Res").toString());
+        } else if (version == 14) {
+            drawList.append(obj.value("Res").toString());
+        } else if (version == 17) {
+            drawList.append(obj.value("Res").toString());
+        } else if (version == 20) {
+            drawList.append(obj.value("Res").toString());
+        }
+    }
+    if (date == QDate::currentDate()) {
+        QUrl url(urlString.arg("GetResult"));
+        QNetworkRequest request(url);
+        request.setRawHeader("Content-Type", "application/json");
+        date = QDateTime::fromSecsSinceEpoch(QDateTime::currentDateTime().toSecsSinceEpoch() - 86400).date();
+        QString stringDate = date.toString("yyyy-M-d");
+        array.append(params.arg(stringDate).arg(gameId));
+        manager->post(request, array);
+    } else {
+        parseData();
+    }
+}
+
 void lottobet::loadData()
 {
+    drawList.clear();
     QUrl url(urlString.arg("GetResult"));
     QNetworkRequest request(url);
     request.setRawHeader("Content-Type", "application/json");
-    QDate date = QDate::currentDate();
+    date = QDate::currentDate();
     QString stringDate = date.toString("yyyy-M-d");
-    QByteArray array;
     array.append(params.arg(stringDate).arg(gameId));
     manager->post(request, array);
 }

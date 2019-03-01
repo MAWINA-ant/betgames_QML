@@ -8,6 +8,7 @@
 #include <QNetworkReply>
 #include <QTimer>
 #include <QDate>
+#include <QDateTime>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -22,6 +23,9 @@ private:
     QString urlString = "https://amazon.betsfactory.net/RNGAPI/WidgetSupportService_v2/RNG_API.svc/%1"; // %1 = функция АПИ (GetResult)
     QString params = "{\"t1\":\"%1\",\"t\":180,\"sID\":%2,\"c\":\"ru\",\"token\":\"389E9109-0B4D-4988-A71A-F96CA16A9993\"}"; // %1 = дата (гггг-м-дд)
                                                                                                                              // %2 = версия игры
+    QByteArray array; // массив байт с параметрами запроса
+    QDate date;       // дата для запроса (вчера и сегодня)
+
     QNetworkAccessManager *manager;
     QTimer *minuteTimer;
     quint8 gameId;
@@ -32,6 +36,7 @@ private:
 
 public:
     void sendDataToQML();
+    void parseData();
 
 signals:
     void sendDrawData(QString, int);
