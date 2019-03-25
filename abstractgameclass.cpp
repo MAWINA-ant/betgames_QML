@@ -59,21 +59,21 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
         QJsonObject objectJson = documentJson.object().value(QString("results")).toObject();
         QJsonValue value = objectJson.value(QString("pageCount"));
         pageCount = qint8(value.toInt()); // узнаем кол-во страниц на сегодня
-        if (pageCount < 10) {
+        if (pageCount < 15) {
             for (int i = 1; i <= pageCount; i++) {
                 listURL.enqueue(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(i))));
             }
-            for (int i = 1; i <= (10 - pageCount); i++) {
+            for (int i = 1; i <= (15 - pageCount); i++) {
                 listURL.enqueue(siteAddress.arg(QString::number(dateSeconds - 86400),(QString::number(gameId)),(QString::number(i))));
             }
         } else {
-            for (int i = 1; i <= 10; i++) {
+            for (int i = 1; i <= 15; i++) {
                 listURL.enqueue(siteAddress.arg(QString::number(dateSeconds),(QString::number(gameId)),(QString::number(i))));
             }
         }
         if (!listURL.empty()) {
             manager->get(QNetworkRequest(QUrl(listURL.dequeue())));
-            emit sendProgressStatus(currentPage * 1.0 / 10, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : gameId == 6 ? "5BET" : gameId == 9 ? "KENO" : "7BET"));
+            emit sendProgressStatus(currentPage * 1.0 / 15, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : gameId == 6 ? "5BET" : gameId == 9 ? "KENO" : "7BET"));
             currentPage++;
         }
     } else {
@@ -87,7 +87,7 @@ void abstractGameClass::replyFinished(QNetworkReply *reply)
             return;
         } else {
             manager->get(QNetworkRequest(QUrl(listURL.dequeue())));
-            emit sendProgressStatus(currentPage * 1.0 / 10, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : gameId == 6 ? "5BET" : gameId == 9 ? "KENO" : "7BET"));
+            emit sendProgressStatus(currentPage * 1.0 / 15, "Загрузка данных " + QString(gameId == 2 ? "WEELBET" : gameId == 6 ? "5BET" : gameId == 9 ? "KENO" : "7BET"));
             currentPage++;
         }
     }

@@ -206,7 +206,7 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 5
                         Repeater {
-                            model: gameId == 7 ? 7 : gameId == 6 ? 5 : gameId == 9 ? 20 : gameId == 21 ? 7 : gameId == 22 ? 5 : gameId == 24 ? 5 : 1
+                            model: gameId == 7 ? 7 : gameId == 6 ? 5 : gameId == 9 ? 20 : gameId == 21 ? 7 : gameId == 22 ? 5 : gameId == 24 ? 10 : 1
                             MyBall {
                                 ballColor: gameId == 2 ? myArray[1] : ""
                                 ballText: gameId == 2 ? myArray[0] : myArray[index] !== undefined ? myArray[index] : ""

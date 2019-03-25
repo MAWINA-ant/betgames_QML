@@ -4,10 +4,10 @@ lottobet::lottobet(quint8 id, QObject *parent) : QObject(parent), gameId(id)
 {
     manager = new QNetworkAccessManager();
     connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-
+    loadData();
     minuteTimer = new QTimer(this);
     connect(minuteTimer, SIGNAL(timeout()), this, SLOT(loadData()));
-    minuteTimer->start(10000);
+    minuteTimer->start(60000);
 }
 
 void lottobet::sendDataToQML()
@@ -73,6 +73,7 @@ void lottobet::replyFinished(QNetworkReply *reply)
     if (!reply->bytesAvailable() || reply->error()) {
         qDebug() << "Error! dostupno byte -> " << reply->bytesAvailable();
         qDebug() << reply->error();
+        qDebug() << "myArray" <<array;
         return;
     }
     QByteArray gameData = reply->readAll();
@@ -83,13 +84,30 @@ void lottobet::replyFinished(QNetworkReply *reply)
         QJsonObject obj = value.toObject();
         int version = obj.value("GID").toInt();
         if (version == 3) {
+            /*QStringList lst = obj.value("Res").toString().split(",");
+            QString str;
+            for (int i = 0; i < 5; i++) {
+                if(i == 4)
+                    str += lst.at(i);
+                else
+                    str += lst.at(i) + ",";
+            }
+            drawList.append(str);*/
             drawList.append(obj.value("Res").toString());
         } else if (version == 14) {
             drawList.append(obj.value("Res").toString());
         } else if (version == 17) {
             drawList.append(obj.value("Res").toString());
-        } else if (version == 20) {
-            drawList.append(obj.value("Res").toString());
+        } else if (version == 25) {
+            QStringList lst = obj.value("Res").toString().split(",");
+            QString str;
+            for (int i = 0; i < 10; i++) {
+                if(i == 9)
+                    str += lst.at(i);
+                else
+                    str += lst.at(i) + ",";
+            }
+            drawList.append(str);
         }
     }
     if (date == QDate::currentDate()) {
@@ -98,6 +116,7 @@ void lottobet::replyFinished(QNetworkReply *reply)
         request.setRawHeader("Content-Type", "application/json");
         date = QDateTime::fromSecsSinceEpoch(QDateTime::currentDateTime().toSecsSinceEpoch() - 86400).date();
         QString stringDate = date.toString("yyyy-M-d");
+        array.clear();
         array.append(params.arg(stringDate).arg(gameId));
         manager->post(request, array);
     } else {
@@ -113,6 +132,7 @@ void lottobet::loadData()
     request.setRawHeader("Content-Type", "application/json");
     date = QDate::currentDate();
     QString stringDate = date.toString("yyyy-M-d");
+    array.clear();
     array.append(params.arg(stringDate).arg(gameId));
     manager->post(request, array);
 }
