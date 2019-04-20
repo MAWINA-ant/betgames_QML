@@ -83,8 +83,8 @@ void lottobet::replyFinished(QNetworkReply *reply)
     foreach (const QJsonValue & value, jsonArray) {
         QJsonObject obj = value.toObject();
         int version = obj.value("GID").toInt();
-        if (version == 3) {
-            /*QStringList lst = obj.value("Res").toString().split(",");
+        if (version == 1) {
+            QStringList lst = obj.value("Res").toString().split(",");
             QString str;
             for (int i = 0; i < 5; i++) {
                 if(i == 4)
@@ -92,8 +92,8 @@ void lottobet::replyFinished(QNetworkReply *reply)
                 else
                     str += lst.at(i) + ",";
             }
-            drawList.append(str);*/
-            drawList.append(obj.value("Res").toString());
+            drawList.append(str);
+            //drawList.append(obj.value("Res").toString());
         } else if (version == 14) {
             drawList.append(obj.value("Res").toString());
         } else if (version == 17) {

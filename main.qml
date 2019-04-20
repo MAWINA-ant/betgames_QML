@@ -95,14 +95,14 @@ ApplicationWindow {
                     border.color: mainWindow.color
 
                     Component.onCompleted:
-                        if ((freqInRow > 41 && gameId == 7)  ||
-                            (freqInRow > 43 && gameId == 6)  ||
-                            (freqInRow > 10 && gameId == 9)  ||
-                            (freqInRow > 119 && gameId == 2) ||
-                            (freqInRow > 119 && gameId == 23)||
-                            (freqInRow > 23 && gameId == 22) ||
-                            (freqInRow > 35 && gameId == 21) ||
-                            (freqInRow > 100 && gameId == 24)) {
+                        if ((freqInRow > 43 && gameId == 7)  ||
+                            (freqInRow > 49 && gameId == 6)  ||
+                            (freqInRow > 20 && gameId == 9)  ||
+                            (freqInRow > 150 && gameId == 2) ||
+                            (freqInRow > 150 && gameId == 23)||
+                            (freqInRow > 25 && gameId == 22) ||
+                            (freqInRow > 45 && gameId == 21) ||
+                            (freqInRow > 49 && gameId == 24)) {
                             myAnimation.start()
                             inRow.color = "red"
                             if (soundSwitch.checked)
@@ -206,7 +206,7 @@ ApplicationWindow {
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 5
                         Repeater {
-                            model: gameId == 7 ? 7 : gameId == 6 ? 5 : gameId == 9 ? 20 : gameId == 21 ? 7 : gameId == 22 ? 5 : gameId == 24 ? 10 : 1
+                            model: gameId == 7 ? 7 : gameId == 6 ? 5 : gameId == 9 ? 20 : gameId == 21 ? 5 : gameId == 22 ? 5 : gameId == 24 ? 10 : 1
                             MyBall {
                                 ballColor: gameId == 2 ? myArray[1] : ""
                                 ballText: gameId == 2 ? myArray[0] : myArray[index] !== undefined ? myArray[index] : ""
