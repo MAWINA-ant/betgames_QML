@@ -51,7 +51,7 @@ void fivebet::getDataFromSite()
             sum += number;
             if (!notFallOut.contains(number)) {
                 notFallOut.insert(number, i);
-                if (i > 43)
+                if (i > 49)
                     emit signalToStartBetting(gameId);
             }
             draw.append(strNumber + " ");

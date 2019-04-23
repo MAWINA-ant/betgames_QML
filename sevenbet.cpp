@@ -51,7 +51,7 @@ void sevenbet::getDataFromSite()
             sum += number;
             if (!notFallOut.contains(number)) {
                 notFallOut.insert(number, i);
-                if (i > 41)
+                if (i > 43)
                     emit signalToStartBetting(gameId);
             }
             draw.append(strNumber + " ");

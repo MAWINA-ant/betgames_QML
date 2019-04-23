@@ -45,7 +45,7 @@ void weelbet::getDataFromSite()
 
         if (!notFallOut.contains(drawList.at(i).first.toInt())) {
             notFallOut.insert(drawList.at(i).first.toInt(), i);
-            if (i > 250)
+            if (i > 350)
                 emit signalToStartBetting(gameId);
         }
         QPair<QString, int> pair;
