@@ -13,6 +13,7 @@
 #include "weelbet.h"
 #include "kenobet.h"
 #include "lottobet.h"
+#include "bettingbot.h"
 
 class appcore : public QObject
 {
@@ -33,16 +34,18 @@ private:
     lottobet *lotto_3;
     lottobet *lotto_4;
 
-    bool isValidRow(QString str);
+    bettingBot *myBot;
+
+    bool isValidRow(const QString &str);
 
 signals:
-    void sendDataToQML(QString drawing, int summOfBalls);
-    void sendResultToQML(int numberBall, int freqRow);
-    void sendProgressStatus(double progressStatus, QString progressGameType);
-    void signalToStartBettingQML(int gameType);
+    void sendDataToQML(const QString &drawing, const int &summOfBalls);
+    void sendResultToQML(const int &numberBall, const int &freqRow);
+    void sendProgressStatus(const double &progressStatus, const QString &progressGameType);
+    void signalToStartBettingQML(const int &gameType);
 
 public slots:
-    void gameChanged(int id);
+    void gameChanged(const int &id);
 
     void replyFinished(QNetworkReply*);
 

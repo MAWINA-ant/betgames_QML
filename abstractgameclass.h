@@ -19,7 +19,7 @@ class abstractGameClass : public QObject
 {
     Q_OBJECT
 public:
-    abstractGameClass(QObject *parent = nullptr) : QObject(parent), gameIntervalSec(180), gameId(1) {} // конструктор по умолчанию (вдруг понадобится)
+    explicit abstractGameClass(QObject *parent = nullptr) : QObject(parent), gameIntervalSec(180), gameId(1) {} // конструктор по умолчанию (вдруг понадобится)
     abstractGameClass(quint8 id, quint16 intervalSec, QObject *parent = nullptr); // если вдруг нужно поменять интервал
     ~abstractGameClass();
     virtual void sendDataToQML() = 0;
@@ -39,12 +39,12 @@ protected:
     QList<QJsonDocument> documentJsonList;
     QQueue<QString> listURL;
 
-    virtual void parserJsonDocPage(QJsonDocument) = 0;
+    virtual void parserJsonDocPage(const QJsonDocument &) = 0;
 
 signals:
     void startGettingData();
-    void sendProgressStatus(double, QString);
-    void signalToStartBetting(int);
+    void sendProgressStatus(const double &, const QString &);
+    void signalToStartBetting(const int &);
 
 public slots:
     virtual void getDataFromSite() = 0;

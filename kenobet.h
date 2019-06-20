@@ -19,11 +19,11 @@ private:
     QList<QPair<QString, int>> drawListQML;
 
 protected:
-    void parserJsonDocPage(QJsonDocument document);
+    void parserJsonDocPage(const QJsonDocument &document);
 
 signals:
-    void sendDrawData(QString, int);
-    void sendResultToQML(int, int);
+    void sendDrawData(const QString &, const int &);
+    void sendResultToQML(const int &, const int &);
 
 public slots:
     void getDataFromSite();

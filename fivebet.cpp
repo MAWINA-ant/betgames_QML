@@ -5,7 +5,7 @@ fivebet::fivebet() : abstractGameClass(6, 180)
     connect(this, SIGNAL(startGettingData()), this, SLOT(getDataFromSite()));
 }
 
-void fivebet::parserJsonDocPage(QJsonDocument document)
+void fivebet::parserJsonDocPage(const QJsonDocument &document)
 {
     QJsonObject jsonObject = document.object().value("results").toObject();
     QJsonArray jsonArray = jsonObject["games"].toArray();
@@ -35,11 +35,47 @@ void fivebet::sendDataToQML()
     }
 }
 
+int fivebet::getSum(const int &count)
+{
+    if (count >= 60 && count <= 62)
+        return 10;
+    else if (count >= 63 && count <= 65)
+        return 10;
+    else if (count >= 66 && count <= 68)
+        return 20;
+    else if (count >= 69 && count <= 71)
+        return 40;
+    else if (count >= 72 && count <= 74)
+        return 80;
+    else if (count >= 75 && count <= 77)
+        return 160;
+    else if (count >= 78 && count <= 81)
+        return 320;
+    else if (count >= 82 && count <= 84)
+        return 640;
+    else if (count >= 85 && count <= 87)
+        return 1280;
+    else if (count >= 88 && count <= 90)
+        return 2560;
+    else if (count >= 91 && count <= 93)
+        return 5120;
+    else
+        return 0;
+}
+
 void fivebet::getDataFromSite()
 {
     drawList.clear();
     drawListQML.clear();
     notFallOut.clear();
+
+    //**************
+    QJsonObject jsonObject = documentJsonList.at(0).object().value("results").toObject();
+    QJsonArray jsonArray = jsonObject["games"].toArray();
+    QJsonObject obj = jsonArray.at(0).toObject();
+    QString idGameForBet = static_cast<QVariant>(obj["id"].toDouble() + 1).toString();
+    //*************
+
     foreach (QJsonDocument doc, documentJsonList) {
         parserJsonDocPage(doc);
     }
@@ -51,8 +87,10 @@ void fivebet::getDataFromSite()
             sum += number;
             if (!notFallOut.contains(number)) {
                 notFallOut.insert(number, i);
-                if (i > 49)
+                if (i > 59) {
                     emit signalToStartBetting(gameId);
+                    emit betsData(number, 6, idGameForBet, getSum(i));
+                }
             }
             draw.append(strNumber + " ");
         }

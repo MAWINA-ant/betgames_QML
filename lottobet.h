@@ -39,9 +39,9 @@ public:
     void parseData();
 
 signals:
-    void sendDrawData(QString, int);
-    void sendResultToQML(int, int);
-    void signalToStartBetting(int);
+    void sendDrawData(const QString &, const int &);
+    void sendResultToQML(const int &, const int &);
+    void signalToStartBetting(const int &);
 
 public slots:
     void replyFinished(QNetworkReply *reply);

@@ -10,6 +10,7 @@ class fivebet : public abstractGameClass
 public:
     explicit fivebet();
     void sendDataToQML();
+    int getSum(const int &);
 
 private:
     QMap<int, int> notFallOut;
@@ -17,11 +18,12 @@ private:
     QList<QPair<QString, int>> drawListQML;
 
 protected:
-    void parserJsonDocPage(QJsonDocument document);
+    void parserJsonDocPage(const QJsonDocument &document);
 
 signals:
-    void sendDrawData(QString, int);
-    void sendResultToQML(int, int);
+    void sendDrawData(const QString &, const int &);
+    void sendResultToQML(const int &, const int &);
+    void betsData(const int &, const int &, const QString &, const int &); // номер шара, id игры, номер розыгрыша, сумма
 
 public slots:
     void getDataFromSite();

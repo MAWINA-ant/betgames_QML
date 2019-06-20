@@ -289,7 +289,7 @@ ApplicationWindow {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 5
-            enabled: false
+            //enabled: false
 
             MyRadioButton {
                 id: button_weel
@@ -451,7 +451,7 @@ ApplicationWindow {
             }
             onValueChanged: {
                 if (value == 0) {
-                    statisticsSettings.enabled = false
+                    //statisticsSettings.enabled = false
                     progressText.text = ""
                 }
                 if (value == 1) {

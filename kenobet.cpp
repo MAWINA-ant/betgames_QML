@@ -17,7 +17,7 @@ void kenobet::sendDataToQML()
     }
 }
 
-void kenobet::parserJsonDocPage(QJsonDocument document)
+void kenobet::parserJsonDocPage(const QJsonDocument &document)
 {
     QJsonObject jsonObject = document.object().value("results").toObject();
     QJsonArray jsonArray = jsonObject["games"].toArray();

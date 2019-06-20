@@ -2,7 +2,7 @@
 #include <QMessageBox>
 
 appcore::appcore(QObject *parent) : QObject(parent)
-{
+{    
     fiveBetGame = new fivebet();
     sevenBetGame = new sevenbet();
     weelBetGame = new weelbet();
@@ -13,10 +13,13 @@ appcore::appcore(QObject *parent) : QObject(parent)
     lotto_3 = new lottobet(3, this);
     lotto_4 = new lottobet(4, this);
 
+    myBot = new bettingBot(this);
+
     connect(fiveBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
     connect(fiveBetGame, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
     connect(fiveBetGame, SIGNAL(sendProgressStatus(double, QString)), this, SIGNAL(sendProgressStatus(double, QString)));
     connect(fiveBetGame, SIGNAL(signalToStartBetting(int)), this, SIGNAL(signalToStartBettingQML(int)));
+    connect(fiveBetGame, SIGNAL(betsData(int, int, QString, int)), myBot, SLOT(makeBet(int, int, QString, int)));
 
     connect(sevenBetGame, SIGNAL(sendDrawData(QString, int)), this, SIGNAL(sendDataToQML(QString, int)));
     connect(sevenBetGame, SIGNAL(sendResultToQML(int, int)), this, SIGNAL(sendResultToQML(int, int)));
@@ -51,7 +54,7 @@ appcore::appcore(QObject *parent) : QObject(parent)
 
 }
 
-bool appcore::isValidRow(QString str)
+bool appcore::isValidRow(const QString &str)
 {
     bool ok = true;
     QStringList strList = str.split(" ");
@@ -66,7 +69,7 @@ bool appcore::isValidRow(QString str)
     return ok;
 }
 
-void appcore::gameChanged(int id)
+void appcore::gameChanged(const int &id)
 {
     if (id == 7)
         sevenBetGame->sendDataToQML();

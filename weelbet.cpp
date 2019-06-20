@@ -5,7 +5,7 @@ weelbet::weelbet() : abstractGameClass (2, 180)
     connect(this, SIGNAL(startGettingData()), this, SLOT(getDataFromSite()));
 }
 
-void weelbet::parserJsonDocPage(QJsonDocument document)
+void weelbet::parserJsonDocPage(const QJsonDocument &document)
 {
     QJsonObject jsonObject = document.object().value("results").toObject();
     QJsonArray jsonArray = jsonObject["games"].toArray();
