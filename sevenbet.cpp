@@ -45,60 +45,60 @@ int sevenbet::getSum(const int &count, const betVariant &var)
         else if (count >= 42 && count <= 43)
             return 10;
         else if (count >= 44 && count <= 45)
-            return 20;
+            return 10;
         else if (count >= 46 && count <= 47)
-            return 30;
+            return 20;
         else if (count >= 48 && count <= 49)
-            return 50;
+            return 30;
         else if (count >= 50 && count <= 51)
-            return 80;
+            return 50;
         else if (count >= 52 && count <= 53)
-            return 130;
+            return 80;
         else if (count >= 54 && count <= 55)
-            return 210;
+            return 130;
         else if (count >= 56 && count <= 57)
-            return 340;
+            return 210;
         else if (count >= 58 && count <= 59)
-            return 550;
+            return 340;
         else if (count >= 60 && count <= 61)
-            return 890;
+            return 550;
         else if (count >= 62 && count <= 63)
-            return 1540;
+            return 890;
         else if (count >= 64 && count <= 65)
-            return 2430;
+            return 1540;
         else if (count >= 66 && count <= 67)
-            return 3970;
+            return 2430;
         else
             return 0;
 
         break;
 
     case DUET:
-        if (count == 31)
-            return 10;
-        else if (count == 32)
+        if (count == 32)
             return 10;
         else if (count == 33)
-            return 20;
+            return 10;
         else if (count == 34)
-            return 30;
+            return 20;
         else if (count == 35)
-            return 50;
+            return 30;
         else if (count == 36)
-            return 80;
+            return 50;
         else if (count == 37)
-            return 130;
+            return 80;
         else if (count == 38)
-            return 210;
+            return 130;
         else if (count == 39)
-            return 340;
+            return 210;
         else if (count == 40)
-            return 550;
+            return 340;
         else if (count == 41)
-            return 890;
+            return 550;
         else if (count == 42)
-            return 1540;
+            return 890;
         else if (count == 43)
+            return 1540;
+        else if (count == 44)
             return 2430;
 
         break;
@@ -154,11 +154,11 @@ void sevenbet::getDataFromSite()
             sum += number;
             if (!notFallOut.contains(number)) {
                 notFallOut.insert(number, i);                
-                if (i > 39) {
+                if (i > 41) {
                     emit signalToStartBetting(gameId);
-                    emit betsData(number, 7, idGameForBet, getSum(i, SOLO));
+                    //emit betsData(number, 7, idGameForBet, getSum(i, SOLO));
                 }
-                if (i > 30) {
+                if (i > 31) {
                     duet.append(number);
                     duet.append(i);
                 }
@@ -167,22 +167,24 @@ void sevenbet::getDataFromSite()
                     if (duet.at(3) < min)
                         min = duet.at(3);
                     for(int j = 0; j < 4; j += 2)
-                        qDebug() << "";
-                        //emit betsData(duet.at(i), 7, idGameForBet, getSum(min, DUET));
+                       ;// emit betsData(duet.at(j), 7, idGameForBet, getSum(min, DUET));
                 }
                 if (i > 22) {
+                    QPair<int, int> pair;
+                    pair.first = number;
+                    pair.second = i;
+                    lstBalls.append(pair);
                     trio.append(number);
                     trio.append(i);
                 }
                 if (trio.size() == 6) {
-                    int min = duet.at(1);
+                    int min = trio.at(1);
                     if (trio.at(3) < min)
                         min = trio.at(3);
                     if (trio.at(5) < min)
                         min = trio.at(5);
                     for(int j = 0; j < 6; j += 2)
-                        qDebug() << "";
-                        //emit betsData(trio.at(i), 7, idGameForBet, getSum(min, TRIO));
+                       ;// emit betsData(trio.at(j), 7, idGameForBet, getSum(min, TRIO));
                 }
             }
             draw.append(strNumber + " ");

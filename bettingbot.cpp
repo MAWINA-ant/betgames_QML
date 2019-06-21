@@ -19,6 +19,7 @@ void bettingBot::makeBet(const int &number, const int &gameId, const QString &be
     QNetworkRequest request(url);
     QString params = "";
     QByteArray postData;
+
     if (gameId == 6)
         postData.append(params.arg(sum).arg(62).arg(6.8).arg(number).arg(betId).arg(gameId));
     else if (gameId == 7)

@@ -22,6 +22,7 @@ private:
     QList<QPair<QString, int>> drawListQML;
     QList<int> trio; // 3 числа не выпадали более 22
     QList<int> duet; // 2 числа не выпадали более 31
+    QList<QPair<int, int>> lstBalls;
 
 protected:
     void parserJsonDocPage(const QJsonDocument &document);
